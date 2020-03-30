@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon server/index.js",
+    "dev": "nodemon server/index.js"
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,7 +18,6 @@
   },
   "homepage": "https://github.com/cyaah/broker#readme",
   "dependencies": {
-    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5"
   },
