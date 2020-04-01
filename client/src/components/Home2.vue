@@ -113,10 +113,7 @@ export default {
   methods: {
     canvas(canvasData) {
       this.canvasData = canvasData;
-      console.log("canvasData");
-      console.log(canvasData);
-      console.log(this.stockPicked);
-      console.log(document.getElementById("chart-body-container"));
+
       // if (!document.getElementById("myChart")) {
       //   let dashBoardContainer = document.getElementById("dashboard-container");
       //   let chartBodyContainer = document.createElement("div");
@@ -127,40 +124,31 @@ export default {
       //   let canvas = document.createElement("canvas");
       //   let x = document.getElementsByClassName('canvasChart')
 
-      //   console.log(x);
       //   canvas.setAttribute("id", "myChart");
       //   canvas.setAttribute("width", "300px");
       //   canvas.setAttribute("height", "300px");
       //   dashBoardContainer.appendChild(chartBodyContainer);
       //   chartBodyContainer.appendChild(chartContainer);
       //   chartContainer.appendChild(canvas);
-      //   console.log(canvas);
       //   document.getElementById("chart-container").appendChild(canvas);
       //   // x.appendChild(canvas)
-      //   console.log(document.getElementById("myChart"));
       // }
-      console.log(document.getElementById("myChart"));
 
       this.createChart("Intra Day Chart", canvasData);
     },
     createChart(chartId, chartData) {
-      console.log("canvas created");
-      console.log(document.getElementById("myChart"));
-      console.log(myChart);
+
       if (myChart) {
         // myChart.destroy();
         document.getElementById("myChart").remove();
-        console.log(document.getElementById("myChart"));
         let canvas = document.createElement("canvas");
         canvas.setAttribute("id", "myChart");
         canvas.setAttribute("width", "300px");
         canvas.setAttribute("height", "300px");
-        console.log(document.getElementById("chart-container"));
         document.getElementById("chart-container").appendChild(canvas);
         myChart.destroy();
       }
       var ctx = document.getElementById("myChart").getContext("2d");
-// var ctx = $('#myChart');
 
       myChart = new Chart(ctx, {
         type: chartData.type,
@@ -171,8 +159,7 @@ export default {
     },
     stockCard(stockInfo) {
       this.stockInfo = stockInfo;
-      console.log(stockInfo);
-      console.log("x0x0x0x");
+
     },
     stockBought() {
     
@@ -180,36 +167,27 @@ export default {
     }
   },
   mounted() {
-      console.log("switichjing to true");
     var stock = this.$store.getters.getStockInfo;
     this.stockInfo = stock;
-    // console.log("dashboard created");
-    // console.log(document.getElementById("myChart"));
-    // console.log(this.stockPicked);
+
     
     //Retrieving user id and setting it 
     var user = firebase.auth().currentUser;
     this.userId = user.uid;
-    //console.log(this.$store.getters.getTimeSeries);
     this.canvasData = this.$store.getters.getTimeSeries;
-    console.log('trigger')
-     console.log(this.canvasData.data)
+
 
 
 
     if (this.canvasData.data) {
-      //console.log("x0x0x0");
       this.canvas(this.canvasData);
     }
 
-    //console.log(this.$store.getters.getTimeSeries);
   
    
     var stockRef = db.collection(this.userId).doc("Portfolio");
-     console.log(stockRef)
      
     stockRef.get().then(doc => {
-      console.log('trigger')
       if (doc.exists) {
         this.funds = doc.data().funds.toFixed(2);
         this.$store.commit("updateFunds", this.funds);
@@ -225,8 +203,7 @@ export default {
       return false;
     },
     timeSeriesPicked: function() {
-      console.log("time series picked ");
-      if (this.canvasData.data.datasets[0].data.length > 0) {
+      if (this.canvasData.data) {
         console.log("yes");
       }
     }

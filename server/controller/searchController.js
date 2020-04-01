@@ -1,6 +1,7 @@
 const axios = require('axios');
 
 
+
 exports.getStockInfo = function (req, res, next) {
   //Get both time series and stock info, consolidate and respond
   //put token in config file. Dont hard code
