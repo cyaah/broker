@@ -5,8 +5,7 @@ exports.getStockInfo = function (req, res, next) {
   //Get both time series and stock info, consolidate and respond
   //put token in config file. Dont hard code
 
-  let ticker = req.body.ticker
-
+  let ticker = req.query.ticker;
   /*Getting stock info
    *
    */
@@ -65,7 +64,7 @@ exports.getTimeSeries = function (req, res, next) {
   /*Getting time serires info
    *
    */
-  let ticker = req.body.ticker
+  let ticker = req.query.ticker
 
   axios
     .get(

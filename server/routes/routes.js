@@ -8,8 +8,8 @@ const searchController = require('../controller/searchController');
 //Routes
 router.get('/stocks', portfolioController.getStocks);
 router.get('/balance', portfolioController.getBalance);
-router.post('/search/stock', searchController.getStockInfo)
-router.post('/search/timeseries', searchController.getTimeSeries)
+router.get('/search/stock', searchController.getStockInfo)
+router.get('/search/timeseries', searchController.getTimeSeries)
 
 
 module.exports = router;
