@@ -1,33 +1,74 @@
 const MongoClient = require('mongodb').MongoClient;
 var serviceAccount = require("../config/serviceaccount.json");
-
+const jwt = require('jsonwebtoken')
+const uri = "mongodb+srv://cyah_13:Fifastreet3@brokerdb-lffjq.mongodb.net/test?retryWrites=true&w=majority";
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
 exports.login = function (req, res, next) {
-  const uri = "mongodb+srv://cyah_13:Fifastreet3@brokerdb-lffjq.mongodb.net/test?retryWrites=true&w=majority";
-  const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
+  var credentials = {};
+  let email = req.body.email;
+  let password = req.body.password;
+
+  console.log(email);
+  console.log(password);
+
+  client.connect((err,db) => {
+    if(err){
+      let error ={
+        message: "Internal Server Error"
+      };
+      console.log(err);
+      res.status(500).json(error);
+      //return console.log(err)
+
+    } else {
+      var collection = db.db("brockerDb").collection("users").findOne({email : email, password:password}, function(err,result){
+        if(err) {
+          let error ={
+            message: "Internal Server Error"
+          };
+          console.log(err);
+          res.status(500).json(error)
+        }else if (result === null){
+          let error = {
+            message: "Email Or Password Incorrect"
+          };
+          console.log(result);
+          res.status(404).json(error)
+        }
+
+        else {
+          credentials = result;
+         let token = generateToken(email);
+         console.log(token);
+          console.log('token');
+          credentials.token = token;
+          res.status(200).json(token)
+        }
+
+        db.close()
+      });
+    }
+
+
   });
-  console.log('login')
-
-  client.connect(err => {
-    const collection = client.db("sample_airbnb").collection("listingsAndReviews").findOne({name : 'Apt Linda Vista Lagoa - Rio'})
-
-    // perform actions on the collection object
-   
-    
-   
-   // client.close();
-  }).then(()=>{
-    console.log(collection)
-  });
 
 
-  console.log('user')
-  //res.status(200).json(user)
 
-}
+};
 
 exports.register = function (req, res, next) {
 
+}
+
+
+function generateToken(email){
+  let token = jwt.sign({email}, 'secret', {
+    algorithm: 'HS256',
+    expiresIn : 500
+  })
+  console.log('token:'+ token );
 }
