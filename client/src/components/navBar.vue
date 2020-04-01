@@ -240,13 +240,13 @@ export default {
              // new Date(this.timeSeriesData[i].date)
            // );
                 this.canvasData.data.labels =  this.timeSeriesData.labels
-                this.canvasData.data.datasets[0].data = this.timeSeriesData.labels
+                this.canvasData.data.datasets[0].data = this.timeSeriesData.dataPoints
             // this.canvasData.data.datasets[0].data.push(
             //   this.timeSeriesData[i].close
             // );
         //  }
-          console.log("canvas data navbar");
-          // console.log(this.canvasData.data.labels);
+          console.log(this.canvasData.data.labels);
+          console.log('this.canvasData.data.labels');
           console.log(this.canvasData.data.datasets[0].data);
           this.$emit("chartData", this.canvasData);
           // this.canvas();
