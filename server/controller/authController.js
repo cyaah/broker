@@ -46,7 +46,7 @@ exports.login = function (req, res, next) {
          //console.log(token);
         
 
-          jwt.sign({email}, 'secret', {
+          jwt.sign({credentials}, 'secret', {
             algorithm: 'HS256',
             expiresIn : 500
           },(err,token)=>{
