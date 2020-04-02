@@ -42,11 +42,20 @@ exports.login = function (req, res, next) {
 
         else {
           credentials = result;
-         let token = generateToken(email);
-         console.log(token);
-          console.log('token');
-          credentials.token = token;
-          res.status(200).json(token)
+         //let token = generateToken(email);
+         //console.log(token);
+        
+
+          jwt.sign({email}, 'secret', {
+            algorithm: 'HS256',
+            expiresIn : 500
+          },(err,token)=>{
+            console.log('token');
+            credentials.token = token;
+            res.status(200).json(credentials)
+          })
+
+         // res.status(200).json(token)
         }
 
         db.close()
@@ -62,13 +71,4 @@ exports.login = function (req, res, next) {
 
 exports.register = function (req, res, next) {
 
-}
-
-
-function generateToken(email){
-  let token = jwt.sign({email}, 'secret', {
-    algorithm: 'HS256',
-    expiresIn : 500
-  })
-  console.log('token:'+ token );
 }
