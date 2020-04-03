@@ -39,34 +39,24 @@ exports.login = function (req, res, next) {
           console.log(result);
           res.status(404).json(error)
         }
-
         else {
           credentials = result;
          //let token = generateToken(email);
          //console.log(token);
-        
-
           jwt.sign({credentials}, 'secret', {
             algorithm: 'HS256',
-            expiresIn : 500
+            expiresIn : 3600
           },(err,token)=>{
             console.log('token');
             credentials.token = token;
             res.status(200).json(credentials)
           })
-
          // res.status(200).json(token)
         }
-
         db.close()
       });
     }
-
-
   });
-
-
-
 };
 
 exports.register = function (req, res, next) {
