@@ -6,34 +6,52 @@ import Register from './components/Register.vue';
 import Home2 from './components/Home2.vue';
 import {
     store
-}
-from './components/store/store.js';
-import firebase from "firebase";
+} from './components/store/store.js';
+
+var jwt = require('jsonwebtoken');
+var jwtDecode = require('jwt-decode');
 
 
 
 
-export const routes = [{
+
+export const routes = [
+    {
         path: '/login',
-        component: Login
+        component: Login,
+        beforeEnter: (to, from, next) => {
+            let token = localStorage.getItem('token');
+            let currentTime = (Date.now().valueOf() / 1000);
+            let decoded = jwtDecode(token);
+             //console.log(store.getters.CHECKLOGIN)
+            if (token && decoded.exp> currentTime) {
+                //console.log('store.state.loggedIn')
+                next('/')
+            } else {
+                next()
+            }
+        }
     },
     {
         path: '/',
         component: Home2,
         beforeEnter: (to, from, next) => {
-            console.log(store.state.loggedIn);
-            console.log("router guard before if");
-            firebase.auth().onAuthStateChanged(function (user){
-                console.log(user)
-                console.log('user')
-                if(user){
-                    console.log('user is signed in')
-                    next()
-                } else {
-                    console.log('user is not signed in')
-                    next('/login')
-                }
-            })
+            let token = localStorage.getItem('token');
+            let currentTime = (Date.now().valueOf() / 1000);
+            let decoded = jwtDecode(token);
+
+            if(token && decoded.exp> currentTime){
+               // console.log('store.getters.getCredentials');
+                //console.log(decoded.exp);
+            //    console.log('user is signed in');
+                next()
+            } else {
+           // console.log('user is not signed in');
+                next('/login')
+            }
+
+
+
         }
     },
     {
@@ -41,15 +59,20 @@ export const routes = [{
         name: 'portfolio',
         component: Portfolio,
         beforeEnter: (to, from, next) => {
-            firebase.auth().onAuthStateChanged(function (user){
-                if(user){
-                    console.log('user is signed in')
-                    next()
-                } else {
-                    console.log('user is not signed in')
-                    next('/login')
-                }
-            })
+            let token = localStorage.getItem('token');
+            let currentTime = (Date.now().valueOf() / 1000);
+            let decoded = jwtDecode(token);
+
+            //console.log(token);
+            if(token && decoded.exp> currentTime){
+                // console.log('store.getters.getCredentials');
+                //console.log(decoded.exp);
+                console.log('user is signed in');
+                next()
+            } else {
+                console.log('user is not signed in');
+                next('/login')
+            }
 
         }
     },
@@ -57,25 +80,9 @@ export const routes = [{
         path: '/stocks',
         component: Stocks
     },
-    {
-        path: '/login',
-        component: Login,
-        //beforeEnter: (to, from, next) => {
-        // console.log("navguard logged in")
-        // if(store.state.loggedIn){
-        //     console.log(store.state.loggedIn)
-        //     next('/')
-        // } else {
-        //     next('/login')
-        // }
-        //}
-    },
+
     {
         path: '/register',
         component: Register
-    },
-    {
-        path: '/home2',
-        component: Home2
     }
 ];

@@ -3,31 +3,48 @@ const router = express.Router();
 const portfolioController = require('../controller/portfolioController');
 const searchController = require('../controller/searchController');
 const authController = require('../controller/authController');
+const jwt = require('jsonwebtoken')
 
 
 //Middleware
-const validate = (req, res, callback)=> {
-  console.log('x0x0')
-  var token = req.headers.authorization;
-  var decoded = verify(token);
+const validate = (req, res, next) => {
+  let bearerHeader = req.headers['authorization'];
+  let currentTime = Date.now().valueOf() / 1000;
+  if (typeof bearerHeader !== 'undefined') {
+    // Split at the space
+    const bearer = bearerHeader.split(' ');
+    // Get token from array
+    let token = bearer[1];
+    var decoded = verify(token);
+    if (!decoded || !decoded.credentials || currentTime> decoded.exp) {
+      res.status(403).json({
+        message: 'not authorized'
+      });
+      // return callback(res);
+    } else {
+      next()
+    }
+
+  } else {
+    // Forbidden
+    res.status(403).json({
+      message: 'not authorized'
+    });
+  }
+
+
+
+  // var token = req.headers.authorization;
 
   function verify(token) {
     var decoded = false;
     try {
-      decoded = jwt.verify(token, secret);
+      decoded = jwt.verify(token, 'secret');
     } catch (e) {
+      console.log(e);
       decoded = false; // still false
     }
-
-  }
-
-  if (!decoded || !decoded.auth) {
-    res.status(400).json({
-      message: 'not authorized'
-    });
-    // return callback(res);
-  } else {
-    next()
+    return decoded
   }
 }
 
@@ -38,9 +55,9 @@ const validate = (req, res, callback)=> {
 //Routes
 router.get('/stocks', portfolioController.getStocks);
 router.get('/balance', portfolioController.getBalance);
-router.get('/search/stock',validate, searchController.getStockInfo)
-router.get('/search/timeseries', searchController.getTimeSeries)
-router.post('/login', authController.login)
-router.post('/register', authController.register)
+router.get('/search/stock', validate, searchController.getStockInfo);
+router.get('/search/timeseries', searchController.getTimeSeries);
+router.post('/login', authController.login);
+router.post('/register', authController.register);
 
 module.exports = router;

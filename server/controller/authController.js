@@ -12,9 +12,6 @@ exports.login = function (req, res, next) {
   let email = req.body.email;
   let password = req.body.password;
 
-  console.log(email);
-  console.log(password);
-
   client.connect((err,db) => {
     if(err){
       let error ={
@@ -36,7 +33,6 @@ exports.login = function (req, res, next) {
           let error = {
             message: "Email Or Password Incorrect"
           };
-          console.log(result);
           res.status(404).json(error)
         }
         else {
@@ -53,7 +49,7 @@ exports.login = function (req, res, next) {
           })
          // res.status(200).json(token)
         }
-        db.close()
+       // db.close()
       });
     }
   });

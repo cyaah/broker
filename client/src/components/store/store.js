@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import portfolio from './modules/portfolio';
 import axios from 'axios';
 import VueAxios from 'vue-axios'
 
@@ -20,13 +19,14 @@ export const store = new Vuex.Store({
     state: {
         funds: null,
         stocks: [],
-        accessToken: null,
+        credentials: {},
         user_id: '',
         loggedIn: false,
         loginError: null,
         stockInfo: {},
         timeSeries:{},
-        loading: false
+        loading: false,
+        token: ''
     },
     mutations: {
         BUY_STOCK(state, {
@@ -69,7 +69,7 @@ export const store = new Vuex.Store({
             console.log("stock sold");
             //console.log(name);
             console.log(state);
-            console.log(state.stocks)
+            console.log(state.stocks);
             const record = state.stocks.find(element => {
                 console.log(element);
                 return element.name === name
@@ -87,14 +87,18 @@ export const store = new Vuex.Store({
             state.funds += price * quantity;
             console.log(state.stocks);
         },
-        LOGIN(accessToken, user) {
-            console.log("LOGIN_202022");
+        LOGIN(state,user) {
             console.log(user);
-            this.state.loggedIn = true;
-            this.state.accessToken = accessToken;
-            this.state.user_id = user.uid;
-            this.funds =
-                console.log(this.state.user_id)
+            state.loggedIn = true;
+            //this.state.accessToken = accessToken;
+            state.credentials =user;
+            state.user_id = user.userName;
+            state.token = user.token;
+            localStorage.setItem("token", user.token);
+
+            console.log("LOGIN_202022");
+
+            console.log(state.token)
         },
         LOGOUT() {
             console.log('store logout');
@@ -177,6 +181,10 @@ export const store = new Vuex.Store({
         getLoadingStatus: state =>{
             console.log('get loading status')
             return state.loading
+        },
+        getCredentials: state =>{
+            console.log('getting credentials');
+            return state.credentials
         }
 
     }
