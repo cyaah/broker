@@ -36,7 +36,7 @@
         </div>
         <ul class="nav navbar-nav ml-auto">
           <li>
-            <span id="user" class="funds">{{ userName.displayName }}</span>
+            <span id="user" class="funds">{{ userName }}</span>
           </li>
           <li class="fundsLi">
             <span class="funds">{{ funds | currency }}</span>
@@ -64,6 +64,8 @@ import axios from "axios";
 import { store } from "./store/store.js";
 import firebase from "firebase";
 import { db } from "../main.js";
+var jwtDecode = require('jwt-decode');
+
 
 export default {
   name: "navBar",
@@ -127,9 +129,13 @@ export default {
       }
     };
   },
-  mounted() {
+  created() {
     var user = firebase.auth().currentUser;
-    this.userName = user;
+    let token = localStorage.getItem('token');
+    let decoded = jwtDecode(token);
+    this.userName = decoded.credentials.userName;
+
+
   },
   computed: {
     funds() {
@@ -177,7 +183,7 @@ export default {
       //       term
       //     )}/quote?token=pk_f606ae9814ec4d9e991aa1def338e260`
       //   )
-       axios 
+       axios
         .get(
           `http://localhost:5000/search/stock?ticker=${encodeURIComponent(
             term
@@ -202,12 +208,12 @@ export default {
         .then(res => {
           this.$store.dispatch("getStockInfo", this.results);
           this.$emit("stockInfo", this.results);
-        
+
           this.error = false;
         })
         .catch(err => {
           console.log(err);
-         
+
           this.$store.dispatch("changeLoading", false);
         });
       //Getting time series data
@@ -230,7 +236,7 @@ export default {
           // this.$emit("chartData", this.canvasData);
         })
         .then(() => {
-         
+
           this.$router.push({ path: "/" });
           this.$store.dispatch("changeLoading", false);
         })

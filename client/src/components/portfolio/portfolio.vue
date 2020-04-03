@@ -123,41 +123,39 @@ export default {
       this.$store.getters.getUserFunds === undefined
     ) {
       console.log("gettinnggg fundsssssss");
-      var user = firebase.auth().currentUser;
-      var userId = user.uid;
-      var stockRef = db.collection(userId).doc("Portfolio");
-      stockRef
-        .get()
-        .then(doc => {
-          if (doc.exists) {
-            this.funds = doc.data().funds.toFixed(2);
-            // console.log(this.funds);
-            // console.log("x0x0x0x1212221");
-          }
-        })
-        .then(resp => {
-          this.$store.commit("updateFunds", this.funds);
-        });
+      //let user = firebase.auth().currentUser;
+      //let userId = user.uid;
+      let token = localStorage.getItem('token')
+      axios.get('http://localhost:5000/portfolio/', { headers: {"Authorization" : `Bearer ${token}`}} ).then(res=>{
+        this.funds = res.data.funds;
+      }).then (()=>{
+        this.$store.commit("updateFunds", this.funds);
+      }).catch(err=>{
+        // Hnadle all errors from server
+        console.log(err)
+      });
+
+
     } else {
       this.funds = this.$store.getters.getUserFunds;
     }
-    var user = firebase.auth().currentUser;
-    this.userId = user.uid;
-    var stockRef = db.collection(this.userId).doc("Portfolio");
-    stockRef.get().then(doc => {
-      if (doc.exists) {
-        //console.log("document exists on created");
-        console.log('x0x0x00x0x')
-        var arr = Object.values(doc.data().stock);
-        console.log(arr)
-        for (var i = 0; i < arr.length; i++) {
-          this.portfolio.push(arr[i]);
-        }
-        //console.log("portfolio");
-        //console.log(this.portfolio);
-        this.$store.commit("SET_PORTFOLIO", this.portfolio);
-      }
-    });
+    // var user = firebase.auth().currentUser;
+    // this.userId = user.uid;
+    // var stockRef = db.collection(this.userId).doc("Portfolio");
+    // stockRef.get().then(doc => {
+    //   if (doc.exists) {
+    //     //console.log("document exists on created");
+    //     console.log('x0x0x00x0x')
+    //     var arr = Object.values(doc.data().stock);
+    //     console.log(arr)
+    //     for (var i = 0; i < arr.length; i++) {
+    //       this.portfolio.push(arr[i]);
+    //     }
+    //     //console.log("portfolio");
+    //     //console.log(this.portfolio);
+    //     this.$store.commit("SET_PORTFOLIO", this.portfolio);
+    //   }
+    // });
     //EventBus listener
     EventBus.$on("stockSelected", stock => {
       this.selected = true;

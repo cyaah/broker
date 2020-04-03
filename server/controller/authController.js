@@ -36,14 +36,14 @@ exports.login = function (req, res, next) {
           res.status(404).json(error)
         }
         else {
-          credentials = result;
-         //let token = generateToken(email);
-         //console.log(token);
+          credentials.userName = result.userName;
+          credentials.email = result.email;
+          credentials.password = result.password;
+          credentials.id = result._id;
           jwt.sign({credentials}, 'secret', {
             algorithm: 'HS256',
             expiresIn : 3600
           },(err,token)=>{
-            console.log('token');
             credentials.token = token;
             res.status(200).json(credentials)
           })

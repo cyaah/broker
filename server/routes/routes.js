@@ -53,8 +53,7 @@ const validate = (req, res, next) => {
 
 
 //Routes
-router.get('/stocks', portfolioController.getStocks);
-router.get('/balance', portfolioController.getBalance);
+router.get('/portfolio',validate, portfolioController.getPortfolio);
 router.get('/search/stock', validate, searchController.getStockInfo);
 router.get('/search/timeseries', searchController.getTimeSeries);
 router.post('/login', authController.login);

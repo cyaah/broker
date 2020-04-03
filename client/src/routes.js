@@ -10,7 +10,9 @@ import {
 
 var jwt = require('jsonwebtoken');
 var jwtDecode = require('jwt-decode');
-
+let token = localStorage.getItem('token');
+let currentTime = (Date.now().valueOf() / 1000);
+let decoded = jwtDecode(token);
 
 
 
@@ -20,9 +22,7 @@ export const routes = [
         path: '/login',
         component: Login,
         beforeEnter: (to, from, next) => {
-            let token = localStorage.getItem('token');
-            let currentTime = (Date.now().valueOf() / 1000);
-            let decoded = jwtDecode(token);
+
              //console.log(store.getters.CHECKLOGIN)
             if (token && decoded.exp> currentTime) {
                 //console.log('store.state.loggedIn')
@@ -36,9 +36,9 @@ export const routes = [
         path: '/',
         component: Home2,
         beforeEnter: (to, from, next) => {
-            let token = localStorage.getItem('token');
-            let currentTime = (Date.now().valueOf() / 1000);
-            let decoded = jwtDecode(token);
+            // let token = localStorage.getItem('token');
+            // let currentTime = (Date.now().valueOf() / 1000);
+            // let decoded = jwtDecode(token);
 
             if(token && decoded.exp> currentTime){
                // console.log('store.getters.getCredentials');
@@ -59,9 +59,9 @@ export const routes = [
         name: 'portfolio',
         component: Portfolio,
         beforeEnter: (to, from, next) => {
-            let token = localStorage.getItem('token');
-            let currentTime = (Date.now().valueOf() / 1000);
-            let decoded = jwtDecode(token);
+            // let token = localStorage.getItem('token');
+            // let currentTime = (Date.now().valueOf() / 1000);
+            // let decoded = jwtDecode(token);
 
             //console.log(token);
             if(token && decoded.exp> currentTime){

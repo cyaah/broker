@@ -88,7 +88,6 @@ export const store = new Vuex.Store({
             console.log(state.stocks);
         },
         LOGIN(state,user) {
-            console.log(user);
             state.loggedIn = true;
             //this.state.accessToken = accessToken;
             state.credentials =user;
@@ -98,7 +97,7 @@ export const store = new Vuex.Store({
 
             console.log("LOGIN_202022");
 
-            console.log(state.token)
+
         },
         LOGOUT() {
             console.log('store logout');
@@ -166,24 +165,19 @@ export const store = new Vuex.Store({
         },
 
         getUserFunds: state => {
-            console.log('trying')
-            console.log(state.funds)
+
             return state.funds
         },
         getStockInfo: state => {
-            console.log('getting from store stock info ')
             return state.stockInfo
         },
         getTimeSeries: state => {
-            console.log('123545454')
             return state.timeSeries
         },
         getLoadingStatus: state =>{
-            console.log('get loading status')
             return state.loading
         },
         getCredentials: state =>{
-            console.log('getting credentials');
             return state.credentials
         }
 
