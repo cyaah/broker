@@ -30,6 +30,9 @@ export default {
       password: ""
     };
   },
+  created(){
+
+  },
 
   methods: {
     loginUser() {
