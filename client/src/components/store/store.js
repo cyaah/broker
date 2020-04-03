@@ -90,9 +90,10 @@ export const store = new Vuex.Store({
         LOGIN(accessToken, user) {
             console.log("LOGIN_202022");
             console.log(user);
+            console.log(accessToken)
             this.state.loggedIn = true;
             this.state.accessToken = accessToken;
-            this.state.user_id = user.uid;
+            this.state.user_id = user.userName;
             this.funds =
                 console.log(this.state.user_id)
         },
