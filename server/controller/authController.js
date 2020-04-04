@@ -12,9 +12,6 @@ exports.login = function (req, res, next) {
   let email = req.body.email;
   let password = req.body.password;
 
-  console.log(email);
-  console.log(password);
-
   client.connect((err,db) => {
     if(err){
       let error ={
@@ -36,37 +33,26 @@ exports.login = function (req, res, next) {
           let error = {
             message: "Email Or Password Incorrect"
           };
-          console.log(result);
           res.status(404).json(error)
         }
-
         else {
-          credentials = result;
-         //let token = generateToken(email);
-         //console.log(token);
-        
-
+          credentials.userName = result.userName;
+          credentials.email = result.email;
+          credentials.password = result.password;
+          credentials.id = result._id;
           jwt.sign({credentials}, 'secret', {
             algorithm: 'HS256',
-            expiresIn : 1000
+            expiresIn : 3600
           },(err,token)=>{
-            console.log('token');
             credentials.token = token;
             res.status(200).json(credentials)
           })
-
          // res.status(200).json(token)
         }
-
-        db.close()
+       // db.close()
       });
     }
-
-
   });
-
-
-
 };
 
 exports.register = function (req, res, next) {

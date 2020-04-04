@@ -7,7 +7,7 @@
       <navBar></navBar>
       <!--<dashboard></dashboard>-->
       <div class="dashboard-container">
-        <portfolioTable v-on:stockSelected="stockSelected" :portfolio="portfolio"></portfolioTable>
+        <portfolioTable v-if="this.loaded === true" v-on:stockSelected="stockSelected" :portfolio="portfolio"></portfolioTable>
 
         <!-- <div class="column">
           <transition-group tag="div" name="portfolio">
@@ -39,7 +39,6 @@ import stock from "./stock.vue";
 import { mapGetters } from "vuex";
 import { db, increment } from "../../main.js";
 import firebase from "firebase";
-import portfolio from "../store/modules/portfolio";
 const FieldValue = require("firebase").firestore.FieldValue;
 import sideBar2 from "../sideBar2";
 import navBar from "../navBar";
@@ -102,7 +101,8 @@ export default {
           }
         }
       },
-      selected: false
+      selected: false,
+      loaded : false
     };
   },
   components: {
@@ -124,46 +124,55 @@ export default {
       this.$store.getters.getUserFunds === undefined
     ) {
       console.log("gettinnggg fundsssssss");
-      var user = firebase.auth().currentUser;
-      var userId = user.uid;
-      var stockRef = db.collection(userId).doc("Portfolio");
-      stockRef
-        .get()
-        .then(doc => {
-          if (doc.exists) {
-            this.funds = doc.data().funds.toFixed(2);
-            console.log(this.funds);
-            console.log("x0x0x0x1212221");
-          }
-        })
-        .then(resp => {
-          this.$store.commit("updateFunds", this.funds);
-        });
+      //let user = firebase.auth().currentUser;
+      //let userId = user.uid;
+      let token = localStorage.getItem('token')
+      axios.get('http://localhost:5000/portfolio/', { headers: {"Authorization" : `Bearer ${token}`}} ).then(res=>{
+        this.funds = res.data.funds;
+        this.portfolio = res.data.stock
+        console.log(res.data)
+      }).then (()=>{
+        this.loaded = true;
+        this.$store.commit("updateFunds", this.funds);
+      }).then (()=>{
+
+        this.$store.commit("SET_PORTFOLIO", this.portfolio)
+      }).catch(err=>{
+        // Hnadle all errors from server
+        console.log(err)
+      });
+
+
     } else {
+
       this.funds = this.$store.getters.getUserFunds;
+      this.portfolio = this.$store.state.stocks;
+      this.loaded = true
     }
-    var user = firebase.auth().currentUser;
-    this.userId = user.uid;
-    var stockRef = db.collection(this.userId).doc("Portfolio");
-    stockRef.get().then(doc => {
-      if (doc.exists) {
-        //console.log("document exists on created");
-        var arr = Object.values(doc.data().stock);
-        for (var i = 0; i < arr.length; i++) {
-          this.portfolio.push(arr[i]);
-        }
-        //console.log("portfolio");
-        //console.log(this.portfolio);
-        this.$store.commit("SET_PORTFOLIO", this.portfolio);
-      }
-    });
+    // var user = firebase.auth().currentUser;
+    // this.userId = user.uid;
+    // var stockRef = db.collection(this.userId).doc("Portfolio");
+    // stockRef.get().then(doc => {
+    //   if (doc.exists) {
+    //     //console.log("document exists on created");
+    //     console.log('x0x0x00x0x')
+    //     var arr = Object.values(doc.data().stock);
+    //     console.log(arr)
+    //     for (var i = 0; i < arr.length; i++) {
+    //       this.portfolio.push(arr[i]);
+    //     }
+    //     //console.log("portfolio");
+    //     //console.log(this.portfolio);
+    //     this.$store.commit("SET_PORTFOLIO", this.portfolio);
+    //   }
+    // });
     //EventBus listener
     EventBus.$on("stockSelected", stock => {
       this.selected = true;
       this.canvasData.data.datasets[0].data = [];
       this.canvasData.data.labels = [];
-      console.log("event bus listener");
-      console.log(stock);
+     // console.log("event bus listener");
+    //  console.log(stock);
       this.stockSelected = stock;
       var term = stock.symbol;
       axios
@@ -185,9 +194,9 @@ export default {
               this.timeSeriesData[i].close
             );
           }
-          console.log("canvas data portfolio");
-          console.log(this.canvasData.data);
-          console.log(this.canvasData.data.datasets[0].data);
+        //  console.log("canvas data portfolio");
+         // console.log(this.canvasData.data);
+         // console.log(this.canvasData.data.datasets[0].data);
           // this.canvas();
         })
         .then(res => {
@@ -196,7 +205,7 @@ export default {
           this.createChart("Intra Day Chart", this.canvasData);
         })
         .catch(err => {
-          console.log(err);
+         // console.log(err);
         });
     });
   },

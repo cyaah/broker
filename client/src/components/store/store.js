@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import portfolio from './modules/portfolio';
 import axios from 'axios';
 import VueAxios from 'vue-axios'
 
@@ -26,7 +25,8 @@ export const store = new Vuex.Store({
         loginError: null,
         stockInfo: {},
         timeSeries:{},
-        loading: false
+        loading: false,
+        token: ''
     },
     mutations: {
         BUY_STOCK(state, {
@@ -69,7 +69,7 @@ export const store = new Vuex.Store({
             console.log("stock sold");
             //console.log(name);
             console.log(state);
-            console.log(state.stocks)
+            console.log(state.stocks);
             const record = state.stocks.find(element => {
                 console.log(element);
                 return element.name === name
@@ -87,15 +87,17 @@ export const store = new Vuex.Store({
             state.funds += price * quantity;
             console.log(state.stocks);
         },
-        LOGIN(user,st) {
-            console.log("LOGIN_202022");
-            console.log(user);
-            this.state.loggedIn = true;
+        LOGIN(state,user) {
+            state.loggedIn = true;
             //this.state.accessToken = accessToken;
-            this.credentials =st
-            this.state.user_id = st.userName;
-            //this.funds =
-                console.log(st)
+            state.credentials =user;
+            state.user_id = user.userName;
+            state.token = user.token;
+            localStorage.setItem("token", user.token);
+
+            console.log("LOGIN_202022");
+
+
         },
         LOGOUT() {
             console.log('store logout');
@@ -163,21 +165,20 @@ export const store = new Vuex.Store({
         },
 
         getUserFunds: state => {
-            console.log('trying')
-            console.log(state.funds)
+
             return state.funds
         },
         getStockInfo: state => {
-            console.log('getting from store stock info ')
             return state.stockInfo
         },
         getTimeSeries: state => {
-            console.log('123545454')
             return state.timeSeries
         },
         getLoadingStatus: state =>{
-            console.log('get loading status')
             return state.loading
+        },
+        getCredentials: state =>{
+            return state.credentials
         }
 
     }

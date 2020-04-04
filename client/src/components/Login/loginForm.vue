@@ -98,17 +98,15 @@ export default {
 
 
        console.log("asd");
-
-
-             axios.post('http://localhost:5000/login/',body).then(res=>{
-        console.log(res.data)
+      axios.post('http://localhost:5000/login/',body).then(res=>{
+        console.log(res)
           this.$store.commit("LOGIN", res.data);
-        
+
       }).then(()=>{
         console.log('router')
           this.$router.push({ path: "/" });
       })
-      
+
       .catch(err=>{
         console.log(err)
         alert('Email or password incorrect')
