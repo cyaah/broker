@@ -43,7 +43,7 @@ export default {
       stocks: this.portfolio
     };
   },
-  created() {
+  mounted() {
     console.log(this.portfolio);
     console.log(this.stocks);
   }

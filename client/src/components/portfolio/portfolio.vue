@@ -7,7 +7,7 @@
       <navBar></navBar>
       <!--<dashboard></dashboard>-->
       <div class="dashboard-container">
-        <portfolioTable v-on:stockSelected="stockSelected" :portfolio="portfolio"></portfolioTable>
+        <portfolioTable v-if="this.loaded === true" v-on:stockSelected="stockSelected" :portfolio="portfolio"></portfolioTable>
 
         <!-- <div class="column">
           <transition-group tag="div" name="portfolio">
@@ -101,7 +101,8 @@ export default {
           }
         }
       },
-      selected: false
+      selected: false,
+      loaded : false
     };
   },
   components: {
@@ -128,8 +129,14 @@ export default {
       let token = localStorage.getItem('token')
       axios.get('http://localhost:5000/portfolio/', { headers: {"Authorization" : `Bearer ${token}`}} ).then(res=>{
         this.funds = res.data.funds;
+        this.portfolio = res.data.stock
+        console.log(res.data)
       }).then (()=>{
+        this.loaded = true;
         this.$store.commit("updateFunds", this.funds);
+      }).then (()=>{
+
+        this.$store.commit("SET_PORTFOLIO", this.portfolio)
       }).catch(err=>{
         // Hnadle all errors from server
         console.log(err)
@@ -137,7 +144,10 @@ export default {
 
 
     } else {
+
       this.funds = this.$store.getters.getUserFunds;
+      this.portfolio = this.$store.state.stocks;
+      this.loaded = true
     }
     // var user = firebase.auth().currentUser;
     // this.userId = user.uid;
