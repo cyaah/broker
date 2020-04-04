@@ -101,7 +101,7 @@ export default {
 
 
              axios.post('http://localhost:5000/login/',body).then(res=>{
-        console.log(res)
+        console.log(res.data)
           this.$store.commit("LOGIN", res.data);
         
       }).then(()=>{

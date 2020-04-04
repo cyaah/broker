@@ -87,15 +87,15 @@ export const store = new Vuex.Store({
             state.funds += price * quantity;
             console.log(state.stocks);
         },
-        LOGIN(user) {
+        LOGIN(user,st) {
             console.log("LOGIN_202022");
             console.log(user);
             this.state.loggedIn = true;
             //this.state.accessToken = accessToken;
-            this.credentials =user
-            this.state.user_id = user.userName;
+            this.credentials =st
+            this.state.user_id = st.userName;
             //this.funds =
-                console.log(this.state.user_id)
+                console.log(st)
         },
         LOGOUT() {
             console.log('store logout');
