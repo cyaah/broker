@@ -62,6 +62,7 @@ router.get('/search/stock', validate, searchController.getStockInfo);
 router.get('/search/timeseries', searchController.getTimeSeries);
 router.post('/login', authController.login);
 router.post('/register', authController.register);
-router.post('/buyStock', validate, portfolioController.buyStock)
+router.post('/buyStock', validate, portfolioController.buyStock);
+router.post('/sellStock', validate, portfolioController.sellStock);
 
 module.exports = router;
