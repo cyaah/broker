@@ -7,14 +7,15 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true
 });
 
+
+//Retriveing the users portfolio
 exports.getPortfolio = function (req, res, next) {
   let Header = req.headers['authorization'].split(' ');;
   let token = Header[1];
-
   let decoded = verify(token);
-
   let userName = decoded.credentials.userName;
   let portfolio = {};
+
   client.connect((err, db) => {
     if (err) {
       let error = {
@@ -23,7 +24,7 @@ exports.getPortfolio = function (req, res, next) {
       console.log(err);
       res.status(500).json(error);
 
-    } else {
+    } else { //Searching for user  in db
       var collection = db.db("brockerDb").collection("users").findOne({
         userName: userName
       }, function (err, result) {
@@ -38,7 +39,7 @@ exports.getPortfolio = function (req, res, next) {
             message: "Email Or Password Incorrect"
           };
           res.status(404).json(error)
-        } else {
+        } else { //Sending back portfolio info
           portfolio.stock = result.portfolio;
           portfolio.funds = result.funds;
 
@@ -86,40 +87,36 @@ exports.buyStock = function (req, res, next) {
         message: "Internal Server Error"
       };
       console.log(err);
-      console.log('1');
       res.status(500).json(error);
 
-    } else {
-
+    } else { //Connecting to db looking for user document
       var collection = db.db("brockerDb").collection("users")
       collection.findOne({
         userName: userName
       }, function (err, result) {
         if (err) {
-          console.log('2');
-
           let error = {
             message: "Internal Server Error"
           };
           console.log(err);
           res.status(500).json(error)
+
         } else if (result === null) {
-          console.log('3');
 
           let error = {
             message: "Cant find user's portfolio"
           };
           res.status(404).json(error)
-        } else {
+        } else { // Found user document
 
           let portfolio = result.portfolio;
           let funds = result.funds;
           let newFunds = funds - cost;
-          if (funds >= cost) {
+          if (funds >= cost) { // Checking if you can afford the purchase
             let oldQuan = 0;
             let oldPrice = 0;
             let exists = false;
-            for (var i = 0; i < result.portfolio.length; i++) {
+            for (var i = 0; i < result.portfolio.length; i++) { // Looping through all stocks to find the one looking for
               if (portfolio[i].name === stock) {
                 oldQuan = portfolio[i].quantity
                 oldPrice = portfolio[i].price
@@ -127,7 +124,7 @@ exports.buyStock = function (req, res, next) {
                 break;
               }
             }
-            if (exists === false) {
+            if (exists === false) { //Not found, insert new stock in portfolio
               let obj = {
                 name: stock,
                 price: req.body.price,
@@ -142,16 +139,13 @@ exports.buyStock = function (req, res, next) {
                 }
               }, function (err) {
                 if (err) {
-                  console.log('5');
 
                   let error = {
                     message: 'Internal Server Error'
                   }
                   res.status(500).json(error)
-                } else {
-                  // res.status(200).json({
-                  //   'message': 'Successfully updated portfolio'
-                  // })
+                } else { // Updating funds after new purchase
+
                   db.db("brockerDb").collection("users").updateOne({
                     userName: userName
                   }, {
@@ -160,7 +154,6 @@ exports.buyStock = function (req, res, next) {
                     }
                   }, function (err) {
                     if (err) {
-                      console.log('6');
 
                       let error = {
                         message: 'Internal Server Error'
@@ -175,7 +168,7 @@ exports.buyStock = function (req, res, next) {
                 }
               })
 
-            } else {
+            } else { // Updating existing stock info with new purcahse
               let newQuantity = parseInt(req.body.quantity) + parseInt(oldQuan);
               let totalPrice = parseFloat(oldQuan).toFixed(2) * parseFloat(oldPrice).toFixed(2) + cost
               let average = parseFloat(totalPrice) / parseInt(newQuantity);
@@ -190,13 +183,12 @@ exports.buyStock = function (req, res, next) {
                 }
               }, function (err, resp) {
                 if (err) {
-                  console.log('7');
 
                   let error = {
                     message: 'Internal Server Error'
                   }
                   res.status(500).json(error)
-                } else {
+                } else { // Updating funds with new purcahse
                   db.db("brockerDb").collection("users").updateOne({
                     userName: userName
                   }, {
@@ -206,7 +198,6 @@ exports.buyStock = function (req, res, next) {
 
                   }, function (err) {
                     if (err) {
-                      console.log('8');
 
                       let error = {
                         message: 'Internal Server Error'
@@ -218,21 +209,15 @@ exports.buyStock = function (req, res, next) {
                       })
                     }
                   })
-
-                  // res.status(200).json({
-                  //   'message': 'Successfully updated portfolio'
-                  // })
                 }
               })
             }
           } else {
-
             res.status(400).json({
               message: 'Not enough funds'
             })
           }
 
-          //res.status(200).json(portfolio)
         }
       });
     }
@@ -262,7 +247,7 @@ exports.sellStock = function (req, res, next) {
       console.log(err);
       res.status(500).json(error);
 
-    } else {
+    } else { // Connecting to db
       var collection = db.db("brockerDb").collection("users")
       collection.findOne({
         userName: userName
@@ -278,20 +263,20 @@ exports.sellStock = function (req, res, next) {
             message: "Cant find user's portfolio"
           };
           res.status(404).json(error)
-        } else {
+        } else { // Found document 
 
           let portfolio = result.portfolio;
           let funds = result.funds;
           let oldQuan = 0;
           let newFunds = funds + sellingPrice
-          for (var i = 0; i < result.portfolio.length; i++) {
+          for (var i = 0; i < result.portfolio.length; i++) { // Looking for stock to sell
             if (portfolio[i].name === stock) {
               oldQuan = portfolio[i].quantity
               oldPrice = portfolio[i].price
               break;
             }
           }
-          if (sellQuan >= oldQuan) {
+          if (sellQuan >= oldQuan) { // Delete stock if your selling more or same as you have 
 
             db.db("brockerDb").collection("users").updateOne({
               userName: userName
@@ -303,16 +288,12 @@ exports.sellStock = function (req, res, next) {
               }
             }, function (err) {
               if (err) {
-                console.log('5');
 
                 let error = {
                   message: 'Internal Server Error'
                 }
                 res.status(500).json(error)
-              } else {
-                // res.status(200).json({
-                //   'message': 'Successfully updated portfolio'
-                // })
+              } else { // Updating funds after selling stock
                 db.db("brockerDb").collection("users").updateOne({
                   userName: userName
                 }, {
@@ -321,8 +302,6 @@ exports.sellStock = function (req, res, next) {
                   }
                 }, function (err) {
                   if (err) {
-                    console.log('6');
-
                     let error = {
                       message: 'Internal Server Error'
                     }
@@ -335,9 +314,8 @@ exports.sellStock = function (req, res, next) {
                 })
               }
             })
-          } else {
+          } else { // Updating existing stock info
             let newQuantity = parseInt(oldQuan) - parseInt(req.body.quantity);
-
             db.db("brockerDb").collection("users").updateOne({
               userName: userName,
               "portfolio.name": stock
@@ -347,13 +325,12 @@ exports.sellStock = function (req, res, next) {
               }
             }, function (err, resp) {
               if (err) {
-                console.log('7');
 
                 let error = {
                   message: 'Internal Server Error'
                 }
                 res.status(500).json(error)
-              } else {
+              } else { // Updating funds after purcahse
                 db.db("brockerDb").collection("users").updateOne({
                   userName: userName
                 }, {
@@ -363,7 +340,6 @@ exports.sellStock = function (req, res, next) {
 
                 }, function (err) {
                   if (err) {
-                    console.log('8');
 
                     let error = {
                       message: 'Internal Server Error'
@@ -376,9 +352,6 @@ exports.sellStock = function (req, res, next) {
                   }
                 })
 
-                // res.status(200).json({
-                //   'message': 'Successfully updated portfolio'
-                // })
               }
             })
           }
@@ -389,6 +362,7 @@ exports.sellStock = function (req, res, next) {
 
 };
 
+// Verifying jwt token
 function verify(token) {
   var decoded = false;
   try {

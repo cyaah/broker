@@ -19,7 +19,7 @@ const validate = (req, res, next) => {
     // Get token from array
     let token = bearer[1];
     var decoded = verify(token);
-    if (!decoded || !decoded.credentials || currentTime> decoded.exp) {
+    if (!decoded || !decoded.credentials || currentTime > decoded.exp) {
       res.status(403).json({
         message: 'jwt expired'
       });
@@ -57,7 +57,7 @@ const validate = (req, res, next) => {
 
 
 //Routes
-router.get('/portfolio',validate, portfolioController.getPortfolio);
+router.get('/portfolio', validate, portfolioController.getPortfolio);
 router.get('/search/stock', validate, searchController.getStockInfo);
 router.get('/search/timeseries', searchController.getTimeSeries);
 router.post('/login', authController.login);
