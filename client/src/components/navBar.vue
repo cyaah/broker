@@ -169,6 +169,7 @@ export default {
         });
     },
     search: function() {
+      let token = localStorage.getItem('token')
       var term = this.searchTerm;
       //   if (this.myChart != null) {
       //     this.myChart.destroy();
@@ -187,7 +188,7 @@ export default {
         .get(
           `http://localhost:5000/search/stock?ticker=${encodeURIComponent(
             term
-          )}`
+          )}`, { headers: {"Authorization" : `Bearer ${token}`}}
         )
         .then(res => {
           if (res) {
@@ -221,9 +222,10 @@ export default {
         .get(
           `http://localhost:5000/search/timeseries?ticker=${encodeURIComponent(
             term
-          )}`
+          )}`, { headers: {"Authorization" : `Bearer ${token}`}}
         )
         .then(res => {
+          console.log('IN HEREREERERRE')
           this.timeSeriesData = res.data;
 
           this.canvasData.data.labels =  this.timeSeriesData.labels
@@ -236,8 +238,9 @@ export default {
           // this.$emit("chartData", this.canvasData);
         })
         .then(() => {
-
-          this.$router.push({ path: "/" });
+          if(this.$router.currentRoute.fullPath !== '/'){
+          this.$router.push({ path: "/" }).catch(err=>{console.log(err)});
+          }
           this.$store.dispatch("changeLoading", false);
         })
         .catch(err => {

@@ -10,48 +10,57 @@ import {
 
 var jwt = require('jsonwebtoken');
 var jwtDecode = require('jwt-decode');
-let token = localStorage.getItem('token');
-let currentTime = (Date.now().valueOf() / 1000);
-let decoded = jwtDecode(token);
+// let token = localStorage.getItem('token');
+// let currentTime = (Date.now().valueOf() / 1000);
+// let decoded = jwtDecode(token);
 
 
 
 
-export const routes = [
-    {
+export const routes = [{
         path: '/login',
         component: Login,
         beforeEnter: (to, from, next) => {
+            let token = localStorage.getItem('token');
+            let currentTime = (Date.now().valueOf() / 1000);
 
-             //console.log(store.getters.CHECKLOGIN)
-            if (token && decoded.exp> currentTime) {
-                //console.log('store.state.loggedIn')
-                next('/')
+            if (token) {
+                let decoded = jwtDecode(token);
+                if (decoded.exp < currentTime) {
+                    //console.log('store.state.loggedIn')
+                    next()
+                } else {
+                    next('/')
+                }
             } else {
                 next()
             }
+
         }
     },
     {
         path: '/',
         component: Home2,
         beforeEnter: (to, from, next) => {
-            // let token = localStorage.getItem('token');
-            // let currentTime = (Date.now().valueOf() / 1000);
-            // let decoded = jwtDecode(token);
 
-            if(token && decoded.exp> currentTime){
-               // console.log('store.getters.getCredentials');
-                //console.log(decoded.exp);
-            //    console.log('user is signed in');
-                next()
+            let token = localStorage.getItem('token');
+            let currentTime = (Date.now().valueOf() / 1000);
+            if (token) {
+
+                let decoded = jwtDecode(token);
+                if (decoded.exp > currentTime) {
+                    // console.log('store.getters.getCredentials');
+                    //console.log(decoded.exp);
+                    //    console.log('user is signed in');
+                    next()
+                } else {
+                    next('/login')
+                }
+
             } else {
-           // console.log('user is not signed in');
+
                 next('/login')
             }
-
-
-
         }
     },
     {
@@ -59,21 +68,19 @@ export const routes = [
         name: 'portfolio',
         component: Portfolio,
         beforeEnter: (to, from, next) => {
-            // let token = localStorage.getItem('token');
-            // let currentTime = (Date.now().valueOf() / 1000);
-            // let decoded = jwtDecode(token);
+            let token = localStorage.getItem('token');
+            let currentTime = (Date.now().valueOf() / 1000);
+            if (token) {
+                let decoded = jwtDecode(token);
+                if (decoded.exp > currentTime) {
+                    next()
+                } else {
 
-            //console.log(token);
-            if(token && decoded.exp> currentTime){
-                // console.log('store.getters.getCredentials');
-                //console.log(decoded.exp);
-                console.log('user is signed in');
-                next()
+                    next('/login')
+                }
             } else {
-                console.log('user is not signed in');
                 next('/login')
             }
-
         }
     },
     {

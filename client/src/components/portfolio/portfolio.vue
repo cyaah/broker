@@ -1,7 +1,6 @@
 <template>
   <div class="portfolioPage">
     <side-bar2></side-bar2>
-
     <!-- Page Content  -->
     <div id="content">
       <navBar></navBar>
@@ -123,14 +122,12 @@ export default {
       this.$store.getters.getUserFunds === null ||
       this.$store.getters.getUserFunds === undefined
     ) {
-      console.log("gettinnggg fundsssssss");
       //let user = firebase.auth().currentUser;
       //let userId = user.uid;
       let token = localStorage.getItem('token')
       axios.get('http://localhost:5000/portfolio/', { headers: {"Authorization" : `Bearer ${token}`}} ).then(res=>{
         this.funds = res.data.funds;
         this.portfolio = res.data.stock
-        console.log(res.data)
       }).then (()=>{
         this.loaded = true;
         this.$store.commit("updateFunds", this.funds);
@@ -144,30 +141,14 @@ export default {
 
 
     } else {
-
       this.funds = this.$store.getters.getUserFunds;
       this.portfolio = this.$store.state.stocks;
       this.loaded = true
     }
-    // var user = firebase.auth().currentUser;
-    // this.userId = user.uid;
-    // var stockRef = db.collection(this.userId).doc("Portfolio");
-    // stockRef.get().then(doc => {
-    //   if (doc.exists) {
-    //     //console.log("document exists on created");
-    //     console.log('x0x0x00x0x')
-    //     var arr = Object.values(doc.data().stock);
-    //     console.log(arr)
-    //     for (var i = 0; i < arr.length; i++) {
-    //       this.portfolio.push(arr[i]);
-    //     }
-    //     //console.log("portfolio");
-    //     //console.log(this.portfolio);
-    //     this.$store.commit("SET_PORTFOLIO", this.portfolio);
-    //   }
-    // });
+    
     //EventBus listener
     EventBus.$on("stockSelected", stock => {
+      let token = localStorage.getItem('token')
       this.selected = true;
       this.canvasData.data.datasets[0].data = [];
       this.canvasData.data.labels = [];
@@ -177,26 +158,14 @@ export default {
       var term = stock.symbol;
       axios
         .get(
-          `https://cloud.iexapis.com/stable/stock/${encodeURIComponent(
+            `http://localhost:5000/search/timeseries?ticker=${encodeURIComponent(
             term
-          )}/time-series/?token=pk_f606ae9814ec4d9e991aa1def338e260`
+          )}`, { headers: {"Authorization" : `Bearer ${token}`}}
         )
         .then(res => {
-          console.log("TIME SERIES");
-          console.log(this.canvasData.data.labels);
           this.timeSeriesData = res.data;
-          //this.canvasData.labels = res.data;
-          for (var i = 0; i < this.timeSeriesData.length; i++) {
-            this.canvasData.data.labels.push(
-              new Date(this.timeSeriesData[i].date)
-            );
-            this.canvasData.data.datasets[0].data.push(
-              this.timeSeriesData[i].close
-            );
-          }
-        //  console.log("canvas data portfolio");
-         // console.log(this.canvasData.data);
-         // console.log(this.canvasData.data.datasets[0].data);
+          this.canvasData.data.labels =  this.timeSeriesData.labels
+          this.canvasData.data.datasets[0].data = this.timeSeriesData.dataPoints
           // this.canvas();
         })
         .then(res => {

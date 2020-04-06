@@ -7,7 +7,7 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true
 });
 
-exports.getPortfolio = function(req, res, next){
+exports.getPortfolio = function (req, res, next) {
   let Header = req.headers['authorization'].split(' ');;
   let token = Header[1];
 
@@ -15,35 +15,35 @@ exports.getPortfolio = function(req, res, next){
 
   let userName = decoded.credentials.userName;
   let portfolio = {};
-  client.connect((err,db) => {
-    if(err){
-      let error ={
+  client.connect((err, db) => {
+    if (err) {
+      let error = {
         message: "Internal Server Error"
       };
       console.log(err);
       res.status(500).json(error);
-      //return console.log(err)
 
     } else {
-      var collection = db.db("brockerDb").collection("users").findOne({userName : userName}, function(err,result){
-        if(err) {
-          let error ={
+      var collection = db.db("brockerDb").collection("users").findOne({
+        userName: userName
+      }, function (err, result) {
+        if (err) {
+          let error = {
             message: "Internal Server Error"
           };
           console.log(err);
           res.status(500).json(error)
-        }else if (result === null){
+        } else if (result === null) {
           let error = {
             message: "Email Or Password Incorrect"
           };
           res.status(404).json(error)
-        }
-        else {
+        } else {
           portfolio.stock = result.portfolio;
           portfolio.funds = result.funds;
 
 
-           res.status(200).json(portfolio)
+          res.status(200).json(portfolio)
         }
         // db.close()
       });
@@ -67,6 +67,126 @@ exports.getPortfolio = function(req, res, next){
 
 
 
+};
+
+
+
+exports.updatePortfolio = function (req, res, next) {
+  let Header = req.headers['authorization'].split(' ');;
+  let token = Header[1];
+  let decoded = verify(token);
+  let userName = decoded.credentials.userName;
+  let stock = req.body.name;
+  let cost = parseFloat(req.body.price * req.body.quantity);
+
+
+  client.connect((err, db) => {
+    if (err) {
+      let error = {
+        message: "Internal Server Error"
+      };
+      console.log(err);
+      res.status(500).json(error);
+
+    } else {
+
+      var collection = db.db("brockerDb").collection("users")
+      collection.findOne({
+        userName: userName
+      }, function (err, result) {
+        if (err) {
+          let error = {
+            message: "Internal Server Error"
+          };
+          console.log(err);
+          res.status(500).json(error)
+        } else if (result === null) {
+          let error = {
+            message: "Cant find user's portfolio"
+          };
+          res.status(404).json(error)
+        } else {
+
+          let portfolio = result.portfolio;
+          let funds = result.funds;
+          if (funds >= cost) {
+             let oldQuan = 0;
+             let oldPrice = 0;
+             let exists = false;
+              for(var i = 0; i < result.portfolio.length;i++){
+                if(portfolio[i].name === stock){
+                  oldQuan = portfolio[i].quantity
+                  oldPrice = portfolio[i].price
+                  exists = true;
+                  break;
+                } 
+              }
+              if(exists === false){
+                let obj = {
+                  name: stock,
+                  price: req.body.price,
+                  quantity: req.body.quantity
+                }
+                db.db("brockerDb").collection("users").updateOne,({
+                  userName: userName
+                }, {
+                  $push: {
+                    portfolio: obj
+                  }
+                }, function (err) {
+                  if (err) {
+                    let error = {
+                      message: 'Internal Server Error'
+                    }
+                    res.status(500).json(error)
+                  } else {
+                    res.status(200).json({
+                      'message': 'Successfully updated portfolio'
+                    })
+                  }
+                })
+
+              }
+              else {
+                let newQuantity = parseInt(req.body.quantity) + parseInt(oldQuan);
+                let totalPrice = parseFloat(oldQuan).toFixed(2) * parseFloat(oldPrice).toFixed(2) + cost
+                let average = parseFloat(totalPrice) / parseInt(newQuantity);
+
+                db.db("brockerDb").collection("users").updateOne({
+                  userName: userName, "portfolio.name": stock
+                }, {
+                  $set:{"portfolio.$.price": average, "portfolio.$.quantity": newQuantity}
+                }, function (err, resp) {
+                  if (err) {
+                    let error = {
+                      message: 'Internal Server Error'
+                    }
+                    res.status(500).json(error)
+                  } else {
+                    res.status(200).json({
+                      'message': 'Successfully updated portfolio'
+                    })
+                  }
+                })
+              }
+          } else {
+
+            res.status(400).json({
+              message: 'Not enough funds'
+            })
+          }
+
+          //res.status(200).json(portfolio)
+        }
+      });
+    }
+  });
+
+
+
+
+};
+
 function verify(token) {
   var decoded = false;
   try {
@@ -77,7 +197,3 @@ function verify(token) {
   }
   return decoded
 }
-
-
-
-};

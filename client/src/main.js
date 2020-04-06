@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import App from './App.vue'
-import firebase from 'firebase';
+ import firebase from 'firebase';
 import VueRouter from 'vue-router';
 import Notifications from 'vue-notification';
 import 'bootstrap';

@@ -7,7 +7,7 @@
     <sideBar></sideBar>
     <div class="dashboard">
     <div class="search-box">
-      <div class="input-groupmb-3">
+      <div class="input-groupmb-3">  
         <input
           v-on:keyup.enter="search"
           v-on:keyyp.enter="canvas"
@@ -114,8 +114,8 @@ import Chart from "chart.js";
 import planetChartData from "./chart-data.js";
 import stockCard from "./stockCard";
 import { db, increment } from "../main.js";
-import firebase from "firebase";
-import firestore from "firebase";
+//import firebase from "firebase";
+//import firestore from "firebase";
 import { isError } from "util";
 // import header from './Header.vue'
 const FieldValue = require("firebase").firestore.FieldValue;
@@ -211,91 +211,91 @@ export default {
     canvas() {
       this.createChart("Intra Day Chart", this.canvasData);
     },
-    search: function() {
-      var term = this.searchTerm;
-      if (this.myChart != null) {
-        this.myChart.destroy();
-        this.canvasData.data.datasets[0].data = [];
-        console.log(this.myChart);
-      }
-      //Getting stock price info
-      axios
-        .get(
-          `https://cloud.iexapis.com/stable/stock/${encodeURIComponent(
-            term
-          )}/quote?token=pk_f606ae9814ec4d9e991aa1def338e260`
-        )
-        .then(res => {
-          if (res) {
-            console.log(res.data);
-            console.log("res");
-            this.results = [];
+    // search: function() {
+    //   var term = this.searchTerm;
+    //   if (this.myChart != null) {
+    //     this.myChart.destroy();
+    //     this.canvasData.data.datasets[0].data = [];
+    //     console.log(this.myChart);
+    //   }
+    //   //Getting stock price info
+    //   axios
+    //     .get(
+    //       `https://cloud.iexapis.com/stable/stock/${encodeURIComponent(
+    //         term
+    //       )}/quote?token=pk_f606ae9814ec4d9e991aa1def338e260`
+    //     )
+    //     .then(res => {
+    //       if (res) {
+    //         console.log(res.data);
+    //         console.log("res");
+    //         this.results = [];
 
-            this.noResults = false;
-            var s = res.data;
-            console.log(s);
-            //fix this logic
-            if (isEmpty(s)) {
-              this.noResults = true;
-              console.log("is empty");
-              console.log(this.noResults);
-            } else {
-              this.notSearched = false;
-              this.results.push(s);
-              console.log("124555");
-              console.log(this.results);
-            }
-          }
-        })
-        .catch(error => {
-          this.error = true;
-          console.log("error");
-          console.log(this.error);
-          console.log(error);
-        });
+    //         this.noResults = false;
+    //         var s = res.data;
+    //         console.log(s);
+    //         //fix this logic
+    //         if (isEmpty(s)) {
+    //           this.noResults = true;
+    //           console.log("is empty");
+    //           console.log(this.noResults);
+    //         } else {
+    //           this.notSearched = false;
+    //           this.results.push(s);
+    //           console.log("124555");
+    //           console.log(this.results);
+    //         }
+    //       }
+    //     })
+    //     .catch(error => {
+    //       this.error = true;
+    //       console.log("error");
+    //       console.log(this.error);
+    //       console.log(error);
+    //     });
 
-      //Getting time series data
-      axios
-        .get(
-          `https://cloud.iexapis.com/stable/stock/${encodeURIComponent(
-            term
-          )}/time-series/?token=pk_f606ae9814ec4d9e991aa1def338e260`
-        )
-        .then(res => {
-          console.log("TIME SERIES");
-          this.timeSeriesData = res.data;
-          //this.canvasData.labels = res.data;
-          for (var i = 0; i < this.timeSeriesData.length; i++) {
-            this.canvasData.data.labels.push(
-              new Date(this.timeSeriesData[i].date)
-            );
-            this.canvasData.data.datasets[0].data.push(
-              this.timeSeriesData[i].close
-            );
-          }
-          console.log(this.canvasData.data.labels);
-          console.log(this.canvasData.data.datasets[0].data);
-          console.log("canvas data");
-          this.canvas();
-        });
+    //   //Getting time series data
+    //   axios
+    //     .get(
+    //       `https://cloud.iexapis.com/stable/stock/${encodeURIComponent(
+    //         term
+    //       )}/time-series/?token=pk_f606ae9814ec4d9e991aa1def338e260`
+    //     )
+    //     .then(res => {
+    //       console.log("TIME SERIES");
+    //       this.timeSeriesData = res.data;
+    //       //this.canvasData.labels = res.data;
+    //       for (var i = 0; i < this.timeSeriesData.length; i++) {
+    //         this.canvasData.data.labels.push(
+    //           new Date(this.timeSeriesData[i].date)
+    //         );
+    //         this.canvasData.data.datasets[0].data.push(
+    //           this.timeSeriesData[i].close
+    //         );
+    //       }
+    //       console.log(this.canvasData.data.labels);
+    //       console.log(this.canvasData.data.datasets[0].data);
+    //       console.log("canvas data");
+    //       this.canvas();
+    //     });
 
-      var isEmpty = obj => {
-        console.log("isEMpty");
-        for (var key in obj) {
-          if (obj.hasOwnProperty(key)) {
-            return false;
-          }
-        }
-        return true;
-      };
-      //console.log("timeseries123");
-      this.term = "";
-      this.noResults = false;
-      this.searchTerm = "";
-      this.canvasData.data.labels = [];
-      this.canvasData.data.datasets[0].data.length = 0;
-      console.log("checking if empty", this.canvasData.data.datasets[0].data);
-    },
+    //   var isEmpty = obj => {
+    //     console.log("isEMpty");
+    //     for (var key in obj) {
+    //       if (obj.hasOwnProperty(key)) {
+    //         return false;
+    //       }
+    //     }
+    //     return true;
+    //   };
+    //   //console.log("timeseries123");
+    //   this.term = "";
+    //   this.noResults = false;
+    //   this.searchTerm = "";
+    //   this.canvasData.data.labels = [];
+    //   this.canvasData.data.datasets[0].data.length = 0;
+    //   console.log("checking if empty", this.canvasData.data.datasets[0].data);
+    // },
 
     createChart(chartId, chartData) {
       console.log("chartData" );
@@ -346,7 +346,7 @@ export default {
       //     console.log('not logged in')
       //   }
       // });
-      var user = firebase.auth().currentUser;
+     // var user = firebase.auth().currentUser;
       if (user) {
         // User is signed in.
         console.log(user);

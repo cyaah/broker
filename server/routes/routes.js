@@ -8,8 +8,11 @@ const jwt = require('jsonwebtoken')
 
 //Middleware
 const validate = (req, res, next) => {
+  console.log('token')
+
   let bearerHeader = req.headers['authorization'];
   let currentTime = Date.now().valueOf() / 1000;
+
   if (typeof bearerHeader !== 'undefined') {
     // Split at the space
     const bearer = bearerHeader.split(' ');
@@ -18,13 +21,12 @@ const validate = (req, res, next) => {
     var decoded = verify(token);
     if (!decoded || !decoded.credentials || currentTime> decoded.exp) {
       res.status(403).json({
-        message: 'not authorized'
+        message: 'jwt expired'
       });
       // return callback(res);
     } else {
       next()
     }
-
   } else {
     // Forbidden
     res.status(403).json({
@@ -39,8 +41,10 @@ const validate = (req, res, next) => {
   function verify(token) {
     var decoded = false;
     try {
+      console.log('try')
       decoded = jwt.verify(token, 'secret');
     } catch (e) {
+      console.log('e')
       console.log(e);
       decoded = false; // still false
     }
@@ -58,5 +62,6 @@ router.get('/search/stock', validate, searchController.getStockInfo);
 router.get('/search/timeseries', searchController.getTimeSeries);
 router.post('/login', authController.login);
 router.post('/register', authController.register);
+router.post('/updatePortfolio', validate, portfolioController.updatePortfolio)
 
 module.exports = router;

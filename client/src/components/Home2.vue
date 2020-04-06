@@ -42,6 +42,7 @@ import stockCard from "./stockCard";
 import firebase from "firebase";
 import { db, increment } from "../main.js";
 import loader from "../components/loader";
+import axios from 'axios';
 
 var myChart;
 export default {
@@ -167,32 +168,38 @@ export default {
     }
   },
   mounted() {
-    var stock = this.$store.getters.getStockInfo;
-    this.stockInfo = stock;
-
     
-    //Retrieving user id and setting it 
-    var user = firebase.auth().currentUser;
-    this.userId = user.uid;
-    this.canvasData = this.$store.getters.getTimeSeries;
 
-
-
-
-    if (this.canvasData.data) {
-      this.canvas(this.canvasData);
-    }
-
-  
-   
-    var stockRef = db.collection(this.userId).doc("Portfolio");
-     
-    stockRef.get().then(doc => {
-      if (doc.exists) {
-        this.funds = doc.data().funds.toFixed(2);
+    if (
+      this.$store.getters.getUserFunds === null ||
+      this.$store.getters.getUserFunds === undefined
+    ) {
+      console.log("gettinnggg fundsssssss");
+      //let user = firebase.auth().currentUser;
+      //let userId = user.uid;
+      let token = localStorage.getItem('token')
+      axios.get('http://localhost:5000/portfolio/', { headers: {"Authorization" : `Bearer ${token}`}} ).then(res=>{
+        this.funds = res.data.funds;
+        this.portfolio = res.data.stock
+        console.log(res.data)
+      }).then (()=>{
+        this.loaded = true;
         this.$store.commit("updateFunds", this.funds);
-      }
-    });
+      }).then (()=>{
+
+        this.$store.commit("SET_PORTFOLIO", this.portfolio)
+      }).catch(err=>{
+        // Hnadle all errors from server
+        console.log(err)
+      });
+
+
+    } else {
+
+      this.funds = this.$store.getters.getUserFunds;
+      this.portfolio = this.$store.state.stocks;
+      this.loaded = true
+    }
   },
   computed: {
     //Checking if the stock info object is empty
