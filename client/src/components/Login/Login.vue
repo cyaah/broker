@@ -83,26 +83,18 @@ export default {
 
 <style scoped>
 
-  body {
-    /*background-image: url();*/
-    background-color: #cccccc;
-      font-family: 'Oswald', sans-serif;
-
-
-
-  }
 
 .container {
   min-width: 100%;
   min-height: 100vh;
   /*background-color: #1126CE;*/
-  background: rgb(2, 0, 36);
-  background: linear-gradient(
+  background:  rgb(33, 49, 58);
+  /* background: linear-gradient(
     rgba(2, 0, 36, 1) 0%,
     rgba(17, 38, 206, 1) 39%,
     rgba(0, 212, 255, 1) 100%
-  );
-  /*background-image: url("../../assets/roberto-junior-4fsCBcZt9H8-unsplash.jpg");*/
+  ); */
+  
   background-size: cover;
   background-repeat: no-repeat;
   padding: 0;
@@ -122,7 +114,7 @@ export default {
     animation-name: moveInRight;
     animation-duration: 1.7s;
     animation-timing-function: ease-out;
-    color: white;
+    color: rgb(29, 196, 86);
   }
   .main-box {
       position: absolute;

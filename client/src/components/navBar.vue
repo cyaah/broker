@@ -163,6 +163,7 @@ export default {
         .signOut()
         .then(resp => {
           this.$store.commit("LOGOUT");
+          localStorage.removeItem('token')
         })
         .then(() => {
           this.$router.push({ path: "/login" });
@@ -452,7 +453,7 @@ input[type="search"] {
     9px center;
   border: solid 1px #ccc;
   padding: 9px 10px 9px 32px;
-  width: 55px;
+  width: 90px;
 
   -webkit-border-radius: 10em;
   -moz-border-radius: 10em;
@@ -463,7 +464,7 @@ input[type="search"] {
   transition: all 0.5s;
 }
 input[type="search"]:focus {
-  width: 130px;
+  width: 150px;
   background-color: #fff;
   border-color: #2ba84a;
 

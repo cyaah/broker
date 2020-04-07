@@ -161,7 +161,8 @@ exports.buyStock = function (req, res, next) {
                       res.status(500).json(error)
                     } else {
                       res.status(200).json({
-                        'message': 'Successfully updated portfolio'
+                        'message': 'Successfully updated portfolio',
+                        'funds': newFunds
                       })
                     }
                   })
@@ -230,6 +231,7 @@ exports.buyStock = function (req, res, next) {
 
 
 exports.sellStock = function (req, res, next) {
+  console.log('selling')
   let Header = req.headers['authorization'].split(' ');;
   let token = Header[1];
   let decoded = verify(token);
@@ -308,7 +310,8 @@ exports.sellStock = function (req, res, next) {
                     res.status(500).json(error)
                   } else {
                     res.status(200).json({
-                      'message': 'Successfully updated portfolio'
+                      'message': 'Successfully updated portfolio',
+                      'funds': newFunds
                     })
                   }
                 })
@@ -347,7 +350,8 @@ exports.sellStock = function (req, res, next) {
                     res.status(500).json(error)
                   } else {
                     res.status(200).json({
-                      'message': 'Successfully updated portfolio'
+                      'message': 'Successfully updated portfolio',
+                      'funds': newFunds
                     })
                   }
                 })

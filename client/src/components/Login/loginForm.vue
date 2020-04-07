@@ -97,10 +97,8 @@ export default {
           //console.log(error);
 
 
-       console.log("asd");
       axios.post('http://localhost:5000/login/',body).then(res=>{
-        console.log(res)
-          this.$store.commit("LOGIN", res.data);
+        this.$store.commit("LOGIN", res.data);
 
       }).then(()=>{
         console.log('router')
@@ -124,7 +122,7 @@ export default {
 }
 .form-container {
   /*background-size: cover;*/
-  width: 38%;
+  width: 25%;
   min-height: 100vh;
   background: white;
   font-family: "Oswald", sans-serif;
@@ -140,6 +138,6 @@ export default {
   background-size: cover;
 }
 .form-control {
-  width: 60%;
+  width: 38%;
 }
 </style>
