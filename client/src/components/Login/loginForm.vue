@@ -124,7 +124,7 @@ export default {
 }
 .form-container {
   /*background-size: cover;*/
-  width: 38%;
+  width: 30%;
   min-height: 100vh;
   background: white;
   font-family: "Oswald", sans-serif;
@@ -140,6 +140,6 @@ export default {
   background-size: cover;
 }
 .form-control {
-  width: 60%;
+  width: 40%;
 }
 </style>
