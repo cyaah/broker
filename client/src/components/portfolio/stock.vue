@@ -99,16 +99,43 @@ export default {
       console.log("sell_stock");
       var user = firebase.auth().currentUser;
       this.userId = user.uid;
+      let token = localStorage.getItem('token')
+
       //Building the order
       var order = {
         name: this.stock.name,
         price: parseFloat(this.stock.price).toFixed(2),
         quantity: parseInt(this.quantity)
       };
-      console.log(order);
+
+      // axios.post('http://localhost:5000/sellStock/', { headers: {"Authorization" : `Bearer ${token}`}} ).then(res=>{
+      
+      
+      
+      // })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       var stockRef = db.collection(this.userId).doc("Portfolio");
-      console.log("stock");
-      console.log("axaxa");
+    
+
+      
+
+
       //Retrieving stock info from firebase
       stockRef.get().then(doc => {
         var currentStock = doc.data().stock[this.stockInfo.symbol];
@@ -118,12 +145,7 @@ export default {
         var sellingPrice =
           parseFloat(this.stock.price).toFixed(2) * parseInt(order.quantity);
         var newFunds = parseFloat(funds) + sellingPrice;
-        console.log("selling price");
-        console.log(sellingPrice);
-        console.log("funds");
-        console.log(funds);
-        console.log(newFunds);
-        console.log("newFunds");
+       
         var increaseBy = firebase.firestore.FieldValue.increment(sellingPrice);
 
         stockRef.update({ funds: increaseBy });
