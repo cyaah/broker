@@ -83,40 +83,18 @@ export default {
 
 <style scoped>
 
-<<<<<<< HEAD
-  body {
-    /*background-image: url();*/
-
-      font-family: 'Oswald', sans-serif;
-
-
-
-  }
-=======
->>>>>>> 0bfa495a50e81be258b1bec16b9f3b9eeae1df78
-
 .container {
   min-width: 100%;
   min-height: 100vh;
   background-color:rgb(33, 49, 58);
   /*background-color: #1126CE;*/
-<<<<<<< HEAD
-  /*background: rgb(2, 0, 36);*/
-  /*background: linear-gradient(*/
-  /*  rgba(2, 0, 36, 1) 0%,*/
-  /*  rgba(17, 38, 206, 1) 39%,*/
-  /*  rgba(0, 212, 255, 1) 100%*/
-  /*);*/
-  /*background-image: url("../../assets/roberto-junior-4fsCBcZt9H8-unsplash.jpg");*/
-=======
   background:  rgb(33, 49, 58);
   /* background: linear-gradient(
     rgba(2, 0, 36, 1) 0%,
     rgba(17, 38, 206, 1) 39%,
     rgba(0, 212, 255, 1) 100%
   ); */
-  
->>>>>>> 0bfa495a50e81be258b1bec16b9f3b9eeae1df78
+
   background-size: cover;
   background-repeat: no-repeat;
   padding: 0;
