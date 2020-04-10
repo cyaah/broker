@@ -23,11 +23,9 @@ export const routes = [{
         beforeEnter: (to, from, next) => {
             let token = localStorage.getItem('token');
             let currentTime = (Date.now().valueOf() / 1000);
-
             if (token) {
                 let decoded = jwtDecode(token);
                 if (decoded.exp < currentTime) {
-                    //console.log('store.state.loggedIn')
                     next()
                 } else {
                     next('/')
@@ -42,23 +40,16 @@ export const routes = [{
         path: '/',
         component: Home2,
         beforeEnter: (to, from, next) => {
-
             let token = localStorage.getItem('token');
             let currentTime = (Date.now().valueOf() / 1000);
             if (token) {
-
                 let decoded = jwtDecode(token);
                 if (decoded.exp > currentTime) {
-                    // console.log('store.getters.getCredentials');
-                    //console.log(decoded.exp);
-                    //    console.log('user is signed in');
                     next()
                 } else {
                     next('/login')
                 }
-
             } else {
-
                 next('/login')
             }
         }
@@ -75,7 +66,6 @@ export const routes = [{
                 if (decoded.exp > currentTime) {
                     next()
                 } else {
-
                     next('/login')
                 }
             } else {

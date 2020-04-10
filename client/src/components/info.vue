@@ -98,14 +98,6 @@ export default {
       });
 
     }
-  },
-  computed: {
-    userId() {
-      return this.$store.state.user_id;
-    }
-  },
-  created() {
-    this.userId = this.$store.getters.GETUSERID;
   }
 };
 </script>

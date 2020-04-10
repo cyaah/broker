@@ -222,10 +222,6 @@ export default {
       let funds = this.funds;
       this.funds += order.sellingPrice;
       console.log(this.funds);
-    },
-    stockSelected: function(stock) {
-      console.log(stock);
-      console.log("grand parent reached");
     }
   }
 };

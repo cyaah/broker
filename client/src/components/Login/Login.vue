@@ -21,7 +21,6 @@ const FieldValue = require("firebase").firestore.FieldValue;
 import { mapActions } from "vuex";
 import { store } from "../store/store.js";
 import loginForm from "./loginForm";
-
 export default {
   data() {
     return {
@@ -31,12 +30,9 @@ export default {
     };
   },
   created(){
-
   },
-
   methods: {
     loginUser() {
-
       // firebase
       //   .auth()
       //   .signInWithEmailAndPassword(this.email, this.password)
@@ -55,7 +51,6 @@ export default {
       //     // Handle Errors here.
       //     var errorCode = error.code;
       //     var errorMessage = error.message;
-
       //     switch (errorCode) {
       //       case "auth/invalid-email":
       //         alert("The user/email is invalid");
@@ -72,7 +67,6 @@ export default {
       //     }
       //     console.log(error);
       //   });
-
     }
   },
   components: {
@@ -82,7 +76,11 @@ export default {
 </script>
 
 <style scoped>
-
+  body {
+    /*background-image: url();*/
+    background-color: #cccccc;
+      font-family: 'Oswald', sans-serif;
+  }
 .container {
   min-width: 100%;
   min-height: 100vh;
@@ -94,7 +92,6 @@ export default {
     rgba(17, 38, 206, 1) 39%,
     rgba(0, 212, 255, 1) 100%
   ); */
-
   background-size: cover;
   background-repeat: no-repeat;
   padding: 0;
@@ -122,18 +119,14 @@ export default {
       left: 70%;
       transform: translate(-50%, -50%);
   }
-
   80% {
     transform: translateX(-15px);
   }
-
   100% {
     opacity: 1;
-
     /* We use tranlate 0 since it just renders it to how it actually is */
     transform: translate(0);
   }
-
 /*body {*/
 /*  background-image: url("../../../images/roberto-junior-4fsCBcZt9H8-unsplash.jpg");*/
 /*  !* background: #2b0c5c; *!*/

@@ -158,16 +158,9 @@ export default {
       }
     },
     logout() {
-      firebase
-        .auth()
-        .signOut()
-        .then(resp => {
-          this.$store.commit("LOGOUT");
-          localStorage.removeItem('token')
-        })
-        .then(() => {
-          this.$router.push({ path: "/login" });
-        });
+      console.log('logggg')
+     this.$store.dispatch("doLogout");
+     this.$router.push({ path: "login" }).catch(err=>{console.log(err)});
     },
     search: function() {
       let token = localStorage.getItem('token')

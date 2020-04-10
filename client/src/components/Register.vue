@@ -42,10 +42,7 @@
 <script>
 import axios from "axios";
 import { db, increment } from "../main.js";
-import firebase from "firebase";
-import firestore from "firebase";
 import { isError } from "util";
-const FieldValue = require("firebase").firestore.FieldValue;
 export default {
   data() {
     return {
@@ -61,47 +58,21 @@ export default {
       var userData = {
         username: this.username,
         email: this.email,
-        password: this.password
+        password: this.password,
+        funds: 10000,
+        portfolio: []
       };
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(this.email, this.password)
-        .then(cred => {
-          this.id = cred.user.uid;
-          return cred.user.updateProfile({
-            displayName: document.getElementById("userName").value
-          });
-        })
-        .then(res => {
-          return db
-            .collection(this.id)
-            .doc("Portfolio")
-            .set({
-              stock: {},
-              funds: 1000
-            });
-          // console.log('res')
-          // console.log(res)
-        })
-        .then(res => {
-          // console.log(res)
-          // console.log('PUSH HOME')
-          var blah = firebase.auth().currentUser;
-          console.log(blah);
-          this.$store.commit("LOGIN", this.id);
+
+      axios.post('http://localhost:5000/register',userData).then(res=>{
+
+          this.$store.commit("LOGIN", res.data);
+      }).then(()=>{
           this.$router.push({ path: "/" });
-        })
-        .catch(function(error) {
-          // Handle Errors here.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          if (errorCode == "auth/weak-password") {
-            alert("The password is too weak.");
-          } else {
-            alert(errorMessage);
-          }
-          console.log(error);
-        });
+
+      }).catch(err=>{
+         alert('Email already registered')
+        console.log(err);
+      })
     }
   }
 };

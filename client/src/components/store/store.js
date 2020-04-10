@@ -101,7 +101,12 @@ export const store = new Vuex.Store({
         },
         LOGOUT() {
             console.log('store logout');
-            this.state.loggedIn = false
+            this.state.loggedIn = false;
+            this.state.credentials = {};
+            this.state.funds = null;
+            localStorage.removeItem('token');
+            
+
         },
         updateFunds(state, funds) {
             state.funds = funds;
@@ -137,7 +142,7 @@ export const store = new Vuex.Store({
         doLogout({
             commit
         }) {
-            ('LOGOUT')
+            commit('LOGOUT')
         },
         getStockInfo({
             commit
