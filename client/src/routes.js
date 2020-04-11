@@ -1,6 +1,4 @@
-import Home from './components/Home.vue';
 import Portfolio from './components/portfolio/portfolio.vue';
-import Stocks from './components/stocks/stocks.vue';
 import Login from './components/Login/Login.vue';
 import Register from './components/Register.vue';
 import Home2 from './components/Home2.vue';
@@ -72,10 +70,6 @@ export const routes = [{
                 next('/login')
             }
         }
-    },
-    {
-        path: '/stocks',
-        component: Stocks
     },
 
     {

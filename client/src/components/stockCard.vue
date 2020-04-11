@@ -16,7 +16,6 @@
         <p class="card-info">Change%: {{ this.results["changePercent"] }}</p>
         <p class="card-info">P/E Ratio: {{ this.results["peRatio"] }}</p>
       </div>
-      <!-- bug- Input allows the enter of 'e' when only shouldbe number. Result in empty string quantity-->
       <div class="input-group">
         <input
           v-on:keyup.enter="buyStock"
@@ -35,14 +34,11 @@
         </div>
       </div>
     </div>
-    <!-- <loader></loader> -->
   </div>
 </template>
 <script>
 import { mapGetters } from "vuex";
 import { db, increment } from "../main.js";
-import firebase from "firebase";
-import firestore from "firebase";
 import { EventBus } from "./eventBus";
 import loader from "../components/loader";
 import axios from 'axios';
@@ -90,11 +86,6 @@ export default {
       this.quantity = 0;
     }
   },
-  // computed: {
-  //   userId() {
-  //     return this.$store.state.user_id;
-  //   }
-  // },
   created() {
     this.userId = this.$store.getters.GETUSERID;
   }

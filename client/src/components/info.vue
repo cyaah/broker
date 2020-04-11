@@ -1,10 +1,8 @@
 <template>
-  <!-- <div class="search-results"> -->
   <div class="card-body-stock">
     <h3 class="ticker">{{ this.results["symbol"] }}</h3>
     <div class="card-info-left">
       <p class="card-info">Current price: {{ this.results["latestPrice"] }}$</p>
-      <!-- <p class="data">{{ this.results["latestPrice"] }}</p> -->
       <p class="card-info">Market Cap: $ {{ this.results["marketCap"] }}</p>
       <p class="card-info">Open: {{ this.results["open"] }}</p>
       <p class="card-info">High: {{ this.results["high"] }}</p>
@@ -17,7 +15,6 @@
       <p class="card-info">Change%: {{ this.results["changePercent"] }}</p>
       <p class="card-info">P/E Ratio: {{ this.results["peRatio"] }}</p>
     </div>
-    <!-- bug- Input allows the enter of 'e' when only shouldbe number. Result in empty string quantity-->
     <div class="input-group">
       <input
         v-on:keyup.enter="buyStock"
@@ -41,8 +38,6 @@
 <script>
 import { mapGetters } from "vuex";
 import { db, increment } from "../main.js";
-import firebase from "firebase";
-import firestore from "firebase";
 import { EventBus } from "../components/eventBus";
 import axios from 'axios';
 

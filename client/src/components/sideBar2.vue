@@ -119,8 +119,6 @@ ul.CTAs a {
   margin-bottom: 5px;
 }
 
-
-
 i {
   color: whitesmoke;
   padding-left: 4px;

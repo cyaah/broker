@@ -63,16 +63,18 @@ export default {
         portfolio: []
       };
 
-      axios.post('http://localhost:5000/register',userData).then(res=>{
-
+      axios
+        .post("http://localhost:5000/register", userData)
+        .then(res => {
           this.$store.commit("LOGIN", res.data);
-      }).then(()=>{
+        })
+        .then(() => {
           this.$router.push({ path: "/" });
-
-      }).catch(err=>{
-         alert('Email already registered')
-        console.log(err);
-      })
+        })
+        .catch(err => {
+          alert("Email already registered");
+          console.log(err);
+        });
     }
   }
 };

@@ -24,7 +24,7 @@ export const store = new Vuex.Store({
         loggedIn: false,
         loginError: null,
         stockInfo: {},
-        timeSeries:{},
+        timeSeries: {},
         loading: false,
         token: ''
     },
@@ -34,10 +34,8 @@ export const store = new Vuex.Store({
             price,
             quantity
         }) {
-            //console.log(state.stocks[0]);
             if (quantity > 0) {
                 const record = state.stocks.find(element => {
-                    console.log(element);
                     return element.name === name
                 });
 
@@ -55,82 +53,60 @@ export const store = new Vuex.Store({
             }
         },
         SET_PORTFOLIO(state, portfolio) {
-            // state.funds = funds;
-            console.log("stock portfolio");
-            console.log(portfolio)
             state.stocks = portfolio
-            console.log(state.stocks);
         },
         SELL_STOCK(state, {
             price,
             name,
             quantity
         }) {
-            console.log("stock sold");
-            //console.log(name);
-            console.log(state);
-            console.log(state.stocks);
+
             const record = state.stocks.find(element => {
-                console.log(element);
                 return element.name === name
             });
 
-            console.log("=+=");
-            console.log(record.quantity);
-            console.log(quantity)
             if (record.quantity > quantity) {
                 record.quantity = quantity
-                console.log(record.quantity)
             } else {
                 state.stocks.splice(state.stocks.indexOf(record), 1);
             }
             state.funds += price * quantity;
-            console.log(state.stocks);
         },
-        LOGIN(state,user) {
+        LOGIN(state, user) {
             state.loggedIn = true;
             //this.state.accessToken = accessToken;
-            state.credentials =user;
+            state.credentials = user;
             state.user_id = user.userName;
             state.token = user.token;
             localStorage.setItem("token", user.token);
 
-            console.log("LOGIN_202022");
 
 
         },
         LOGOUT() {
-            console.log('store logout');
             this.state.loggedIn = false;
             this.state.credentials = {};
             this.state.funds = null;
             localStorage.removeItem('token');
-            
+
 
         },
         updateFunds(state, funds) {
             state.funds = funds;
         },
         STOCKINFO(state, stockInfo) {
-            console.log(stockInfo);
             state.stockInfo = {};
             state.stockInfo = stockInfo
-            console.log(state.stockInfo)
-            console.log(state.stockInfo.length)
+
 
         },
         TIMESERIES(state, timeSeries) {
-            console.log('THIIS TIME SERIES');
             state.timeSeries = {};
             //console.log(state.timeSeries.data.labels)
             state.timeSeries = timeSeries;
-            console.log(state.timeSeries)
         },
-        loadingStatus(state, loadingStatus){
-            console.log(state.loading)
-            console.log('loading status')
-            state.loading=loadingStatus;
-            console.log(state.loading)
+        loadingStatus(state, loadingStatus) {
+            state.loading = loadingStatus;
         }
     },
     actions: {
@@ -156,7 +132,7 @@ export const store = new Vuex.Store({
         },
         changeLoading({
             commit
-        }, loadingStatus){
+        }, loadingStatus) {
             commit('loadingStatus', loadingStatus)
         }
     },
@@ -179,10 +155,10 @@ export const store = new Vuex.Store({
         getTimeSeries: state => {
             return state.timeSeries
         },
-        getLoadingStatus: state =>{
+        getLoadingStatus: state => {
             return state.loading
         },
-        getCredentials: state =>{
+        getCredentials: state => {
             return state.credentials
         }
 

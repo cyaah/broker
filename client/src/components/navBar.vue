@@ -62,10 +62,8 @@
 <script>
 import axios from "axios";
 import { store } from "./store/store.js";
-import firebase from "firebase";
 import { db } from "../main.js";
-var jwtDecode = require('jwt-decode');
-
+var jwtDecode = require("jwt-decode");
 
 export default {
   name: "navBar",
@@ -130,12 +128,9 @@ export default {
     };
   },
   created() {
-    var user = firebase.auth().currentUser;
-    let token = localStorage.getItem('token');
+    let token = localStorage.getItem("token");
     let decoded = jwtDecode(token);
     this.userName = decoded.credentials.userName;
-
-
   },
   computed: {
     funds() {
@@ -158,31 +153,26 @@ export default {
       }
     },
     logout() {
-      console.log('logggg')
-     this.$store.dispatch("doLogout");
-     this.$router.push({ path: "login" }).catch(err=>{console.log(err)});
+      this.$store.dispatch("doLogout");
+      this.$router.push({ path: "login" }).catch(err => {
+        console.log(err);
+      });
     },
     search: function() {
-      let token = localStorage.getItem('token')
+      let token = localStorage.getItem("token");
       var term = this.searchTerm;
-      //   if (this.myChart != null) {
-      //     this.myChart.destroy();
+
       this.canvasData.data.datasets[0].data = [];
       this.canvasData.data.labels = [];
-      //   }
       this.results = [];
       this.$store.dispatch("changeLoading", true); //Getting stock price info
-      // axios
-      //   .get(
-      //     `https://cloud.iexapis.com/stable/stock/${encodeURIComponent(
-      //       term
-      //     )}/quote?token=pk_f606ae9814ec4d9e991aa1def338e260`
-      //   )
-       axios
+
+      axios
         .get(
           `http://localhost:5000/search/stock?ticker=${encodeURIComponent(
             term
-          )}`, { headers: {"Authorization" : `Bearer ${token}`}}
+          )}`,
+          { headers: { Authorization: `Bearer ${token}` } }
         )
         .then(res => {
           if (res) {
@@ -194,7 +184,6 @@ export default {
             if (isEmpty(s)) {
               this.noResults = true;
             } else {
-              //turning the object and storing it in an array
               this.notSearched = false;
               this.results = s;
             }
@@ -216,29 +205,28 @@ export default {
         .get(
           `http://localhost:5000/search/timeseries?ticker=${encodeURIComponent(
             term
-          )}`, { headers: {"Authorization" : `Bearer ${token}`}}
+          )}`,
+          { headers: { Authorization: `Bearer ${token}` } }
         )
         .then(res => {
-          console.log('IN HEREREERERRE')
           this.timeSeriesData = res.data;
 
-          this.canvasData.data.labels =  this.timeSeriesData.labels
-          this.canvasData.data.datasets[0].data = this.timeSeriesData.dataPoints
+          this.canvasData.data.labels = this.timeSeriesData.labels;
+          this.canvasData.data.datasets[0].data = this.timeSeriesData.dataPoints;
           this.$emit("chartData", this.canvasData);
-          // this.canvas();
         })
         .then(res => {
           this.$store.dispatch("getTimeSeries", this.canvasData);
-          // this.$emit("chartData", this.canvasData);
         })
         .then(() => {
-          if(this.$router.currentRoute.fullPath !== '/'){
-          this.$router.push({ path: "/" }).catch(err=>{console.log(err)});
+          if (this.$router.currentRoute.fullPath !== "/") {
+            this.$router.push({ path: "/" }).catch(err => {
+              console.log(err);
+            });
           }
           this.$store.dispatch("changeLoading", false);
         })
         .catch(err => {
-
           this.$store.dispatch("changeLoading", false);
           this.error = true;
           console.log(err);
@@ -252,11 +240,8 @@ export default {
         }
         return true;
       };
-      // var stockInfo = { timeseries: this.timeSeriesData, stock: this.results };
       this.term = "";
       this.noResults = false;
-      // this.$router.push({ path: "/" });
-      // this.searchTerm = "";
     },
     canvas: function() {
       this.createChart("Intra Day Chart", this.canvasData);

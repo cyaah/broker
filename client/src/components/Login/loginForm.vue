@@ -26,7 +26,6 @@
           />
         </div>
         <button @click.prevent="loginUser" class="btn btn-primary">Login</button>
-        <!-- <button class="btn btn-primary" >Register</button> -->
       </form>
       <router-link class="registerLink" to="/register">Register</router-link>
     </div>
@@ -35,11 +34,6 @@
 
 <script>
 import axios from "axios";
-import { db, increment } from "../../main.js";
-import firebase from "firebase";
-import firestore from "firebase";
-import { isError } from "util";
-const FieldValue = require("firebase").firestore.FieldValue;
 import { mapActions } from "vuex";
 import { store } from "../store/store.js";
 
@@ -58,56 +52,10 @@ export default {
         email: this.email,
         password: this.password
       }
-      // console.log(this.email);
-      // console.log(this.password);
-      // firebase
-      //   .auth()
-      //   .signInWithEmailAndPassword(this.email, this.password)
-      //   .then(cred => {
-      //     console.log("login");
-      //     console.log(cred.user);
-      //     this.$store.commit("LOGIN", cred.user);
-      //   })
-      //   .then(res => {
-      //     console.log(this.email);
-      //     console.log("email");
-      //     //this.$store.dispatch("buyStock", order);
-      //     this.$router.push({ path: "/" });
-      //   })
-      //   .catch(error => {
-      //     // Handle Errors here.
-      //     var errorCode = error.code;
-      //     var errorMessage = error.message;
-
-      //     switch (errorCode) {
-      //       case "auth/invalid-email":
-      //         alert("The user/email is invalid");
-      //         break;
-      //       case "auth/wrong-password":
-      //         alert("The email or password is wrong");
-      //         break;
-      //       case "auth/user-not-found":
-      //         alert("The user was not found");
-      //         break;
-      //       default:
-      //         alert(errorMessage);
-      //         break;
-      //     }
-          // if (errorCode == "auth/wrong-password") {
-          //   alert("The password or the user is invalid.");
-          // } else if (errorCode == "auth/invalid-email"){
-          //
-          // } else {
-          //   alert(errorMessage);
-          // }
-          //console.log(error);
-
-
       axios.post('http://localhost:5000/login/',body).then(res=>{
         this.$store.commit("LOGIN", res.data);
 
       }).then(()=>{
-        console.log('router')
           this.$router.push({ path: "/" });
       })
 
@@ -115,7 +63,6 @@ export default {
         console.log(err)
         alert('Email or password incorrect')
       })
-        // });
     }
   }
 };

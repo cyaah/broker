@@ -34,14 +34,14 @@ export default {
       .then(res => {
         if (res) {
           this.stockInfo = res.data;
-          // console.log(this.stockInfo);
         }
       })
       .then(con => {
         let q = this.stock.quantity;
         //Getting stock price info
-      }).catch(err =>{
-        console.log(err)
+      })
+      .catch(err => {
+        console.log(err);
       });
   },
   methods: {

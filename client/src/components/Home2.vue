@@ -1,21 +1,13 @@
 <template>
   <div class="wrapper">
     <side-bar2></side-bar2>
-    <!-- <div v-if="success === true" class="alert alert-success"  id="alert" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <strong>Success!</strong> You have been signed in successfully!
-    </div>-->
-    <!-- Page Content  -->
     <div id="content">
       <navBar v-on:chartData="canvas" v-on:stockInfo="stockCard"></navBar>
-      <!--<dashboard></dashboard>-->
       <div id="dashboard-container" class="dashboard-container">
-        <div id="chart-body-container" class="chart-card-body" >
+        <div id="chart-body-container" class="chart-card-body">
           <div id="chart-container" class="chart-container">
             <loader></loader>
-            <canvas id="myChart" class = "canvasChart"height="320px" ></canvas>
+            <canvas id="myChart" class="canvasChart" height="320px"></canvas>
           </div>
         </div>
         <stockCard
@@ -37,12 +29,10 @@
 <script>
 import sideBar2 from "./sideBar2";
 import navBar from "./navBar";
-import dashboard from "./dashboard";
 import stockCard from "./stockCard";
-import firebase from "firebase";
 import { db, increment } from "../main.js";
 import loader from "../components/loader";
-import axios from 'axios';
+import axios from "axios";
 
 var myChart;
 export default {
@@ -114,33 +104,10 @@ export default {
   methods: {
     canvas(canvasData) {
       this.canvasData = canvasData;
-
-      // if (!document.getElementById("myChart")) {
-      //   let dashBoardContainer = document.getElementById("dashboard-container");
-      //   let chartBodyContainer = document.createElement("div");
-      //   let chartContainer = document.createElement("div");
-      //   chartBodyContainer.setAttribute("class", "chart-card-body");
-
-      //   chartContainer.setAttribute("id", "chart-container");
-      //   let canvas = document.createElement("canvas");
-      //   let x = document.getElementsByClassName('canvasChart')
-
-      //   canvas.setAttribute("id", "myChart");
-      //   canvas.setAttribute("width", "300px");
-      //   canvas.setAttribute("height", "300px");
-      //   dashBoardContainer.appendChild(chartBodyContainer);
-      //   chartBodyContainer.appendChild(chartContainer);
-      //   chartContainer.appendChild(canvas);
-      //   document.getElementById("chart-container").appendChild(canvas);
-      //   // x.appendChild(canvas)
-      // }
-
       this.createChart("Intra Day Chart", canvasData);
     },
     createChart(chartId, chartData) {
-
       if (myChart) {
-        // myChart.destroy();
         document.getElementById("myChart").remove();
         let canvas = document.createElement("canvas");
         canvas.setAttribute("id", "myChart");
@@ -160,45 +127,41 @@ export default {
     },
     stockCard(stockInfo) {
       this.stockInfo = stockInfo;
-
     },
     stockBought() {
-    
       this.success = true;
     }
   },
   mounted() {
-    
-
     if (
       this.$store.getters.getUserFunds === null ||
       this.$store.getters.getUserFunds === undefined
     ) {
-      console.log("gettinnggg fundsssssss");
-      //let user = firebase.auth().currentUser;
-      //let userId = user.uid;
-      let token = localStorage.getItem('token')
-      axios.get('http://localhost:5000/portfolio/', { headers: {"Authorization" : `Bearer ${token}`}} ).then(res=>{
-        this.funds = res.data.funds;
-        this.portfolio = res.data.stock
-        console.log(res.data)
-      }).then (()=>{
-        this.loaded = true;
-        this.$store.commit("updateFunds", this.funds);
-      }).then (()=>{
 
-        this.$store.commit("SET_PORTFOLIO", this.portfolio)
-      }).catch(err=>{
-        // Hnadle all errors from server
-        console.log(err)
-      });
-
-
+      let token = localStorage.getItem("token");
+      axios
+        .get("http://localhost:5000/portfolio/", {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => {
+          this.funds = res.data.funds;
+          this.portfolio = res.data.stock;
+        })
+        .then(() => {
+          this.loaded = true;
+          this.$store.commit("updateFunds", this.funds);
+        })
+        .then(() => {
+          this.$store.commit("SET_PORTFOLIO", this.portfolio);
+        })
+        .catch(err => {
+          // Hnadle all errors from server
+          console.log(err);
+        });
     } else {
-
       this.funds = this.$store.getters.getUserFunds;
       this.portfolio = this.$store.state.stocks;
-      this.loaded = true
+      this.loaded = true;
     }
   },
   computed: {
@@ -211,7 +174,6 @@ export default {
     },
     timeSeriesPicked: function() {
       if (this.canvasData.data) {
-        console.log("yes");
       }
     }
   }

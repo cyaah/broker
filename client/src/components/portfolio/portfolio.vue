@@ -6,22 +6,11 @@
       <navBar></navBar>
       <!--<dashboard></dashboard>-->
       <div class="dashboard-container">
-        <portfolioTable v-if="this.loaded === true" v-on:stockSelected="stockSelected" :portfolio="portfolio"></portfolioTable>
-
-        <!-- <div class="column">
-          <transition-group tag="div" name="portfolio">
-            <app-stock
-              v-for="(stock,index) in portfolio"
-              :stock="stock"
-              :portfolio="portfolio"
-              v-on:deleteStock="deleteThisStock"
-              v-on:updateStock="updateStock"
-              :key="stock.name"
-              :index="index"
-            ></app-stock>
-          </transition-group>
-        </div>-->
-
+        <portfolioTable
+          v-if="this.loaded === true"
+          v-on:stockSelected="stockSelected"
+          :portfolio="portfolio"
+        ></portfolioTable>
         <div class="chart-card-body" v-if="this.selected === true">
           <div id="chart-container">
             <canvas id="myChart" width="20px" height="320px"></canvas>
@@ -34,11 +23,7 @@
 </template>
 
 <script>
-import stock from "./stock.vue";
 import { mapGetters } from "vuex";
-import { db, increment } from "../../main.js";
-import firebase from "firebase";
-const FieldValue = require("firebase").firestore.FieldValue;
 import sideBar2 from "../sideBar2";
 import navBar from "../navBar";
 import portfolioTable from "./portfolioTable";
@@ -101,7 +86,7 @@ export default {
         }
       },
       selected: false,
-      loaded : false
+      loaded: false
     };
   },
   components: {
@@ -122,74 +107,72 @@ export default {
       this.$store.getters.getUserFunds === null ||
       this.$store.getters.getUserFunds === undefined
     ) {
-      //let user = firebase.auth().currentUser;
-      //let userId = user.uid;
-      let token = localStorage.getItem('token')
-      axios.get('http://localhost:5000/portfolio/', { headers: {"Authorization" : `Bearer ${token}`}} ).then(res=>{
-        this.funds = res.data.funds;
-        this.portfolio = res.data.stock
-      }).then (()=>{
-        this.loaded = true;
-        this.$store.commit("updateFunds", this.funds);
-      }).then (()=>{
-
-        this.$store.commit("SET_PORTFOLIO", this.portfolio)
-      }).catch(err=>{
-        // Hnadle all errors from server
-        console.log(err)
-      });
-
-
+      let token = localStorage.getItem("token");
+      axios
+        .get("http://localhost:5000/portfolio/", {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => {
+          this.funds = res.data.funds;
+          this.portfolio = res.data.stock;
+        })
+        .then(() => {
+          this.loaded = true;
+          this.$store.commit("updateFunds", this.funds);
+        })
+        .then(() => {
+          this.$store.commit("SET_PORTFOLIO", this.portfolio);
+        })
+        .catch(err => {
+          // Hnadle all errors from server
+          console.log(err);
+        });
     } else {
       this.funds = this.$store.getters.getUserFunds;
       this.portfolio = this.$store.state.stocks;
-      this.loaded = true
+      this.loaded = true;
     }
-    
+
     //EventBus listener
     EventBus.$on("stockSelected", stock => {
-      let token = localStorage.getItem('token')
+      let token = localStorage.getItem("token");
       this.selected = true;
       this.canvasData.data.datasets[0].data = [];
       this.canvasData.data.labels = [];
-     // console.log("event bus listener");
-    //  console.log(stock);
+
       this.stockSelected = stock;
       var term = stock.symbol;
       axios
         .get(
-            `http://localhost:5000/search/timeseries?ticker=${encodeURIComponent(
+          `http://localhost:5000/search/timeseries?ticker=${encodeURIComponent(
             term
-          )}`, { headers: {"Authorization" : `Bearer ${token}`}}
+          )}`,
+          { headers: { Authorization: `Bearer ${token}` } }
         )
         .then(res => {
           this.timeSeriesData = res.data;
-          this.canvasData.data.labels =  this.timeSeriesData.labels
-          this.canvasData.data.datasets[0].data = this.timeSeriesData.dataPoints
+          this.canvasData.data.labels = this.timeSeriesData.labels;
+          this.canvasData.data.datasets[0].data = this.timeSeriesData.dataPoints;
           // this.canvas();
         })
         .then(res => {
           this.$store.dispatch("getTimeSeries", this.canvasData);
-          //this.$emit("chartData", this.canvasData);
           this.createChart("Intra Day Chart", this.canvasData);
         })
         .catch(err => {
-         // console.log(err);
+          console.log(err);
         });
     });
   },
   methods: {
     createChart(chartId, chartData) {
-      console.log("trying to create ");
       if (myChart) {
         console.log("inside");
         document.getElementById("myChart").remove();
-        console.log(document.getElementById("myChart"));
         let canvas = document.createElement("canvas");
         canvas.setAttribute("id", "myChart");
         canvas.setAttribute("width", "300px");
         canvas.setAttribute("height", "300px");
-        console.log(document.getElementById("chart-container"));
         document.getElementById("chart-container").appendChild(canvas);
         myChart.destroy();
       }
@@ -202,30 +185,21 @@ export default {
       this.stockData = true;
     },
     deleteThisStock: function(payload) {
-      console.log("DELETE STOCK");
       let index = payload.index;
       this.portfolio.splice(index, 1);
-      console.log(payload);
       this.funds += payload.sellingPrice;
     },
     updateStock: function(order) {
-      console.log("UPDATE STOCK");
-      console.log(order.name);
       for (var i = 0; i < this.portfolio.length; i++) {
         if (this.portfolio[i].name === order.name) {
           this.portfolio[i].quantity = order.quantity;
-          console.log("found");
-          console.log(this.portfolio[i]);
         }
       }
-      console.log(order.sellingPrice);
       let funds = this.funds;
       this.funds += order.sellingPrice;
-      console.log(this.funds);
     }
   }
 };
-//}
 </script>
 
 <style scoped>
