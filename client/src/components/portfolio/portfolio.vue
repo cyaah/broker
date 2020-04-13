@@ -90,7 +90,7 @@ export default {
     };
   },
   components: {
-    appStock: stock,
+    // appStock: stock,
     sideBar2: sideBar2,
     navBar,
     portfolioTable,

@@ -1,6 +1,5 @@
 <template>
   <div class="form-container">
-    <strong>StockSim</strong>
     <div class="form-card">
       <form>
         <div class="form-group">

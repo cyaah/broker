@@ -33,7 +33,8 @@ body {
   /*background-image: url();*/
   background-color: #cccccc;
   font-family: "Oswald", sans-serif;
-}
+} 
+
 .container {
   min-width: 100%;
   min-height: 100vh;

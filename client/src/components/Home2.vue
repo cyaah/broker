@@ -40,7 +40,7 @@ export default {
   components: {
     sideBar2: sideBar2,
     navBar: navBar,
-    dashboard: dashboard,
+    // dashboard: dashboard,
     stockCard,
     loader
   },
