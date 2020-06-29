@@ -1,4 +1,5 @@
 <template>
+<div class="container">
   <div class="form-container">
     <div class="form-card">
       <form>
@@ -29,6 +30,7 @@
       <router-link class="registerLink" to="/register">Register</router-link>
     </div>
   </div>
+</div>  
 </template>
 
 <script>
