@@ -1,7 +1,7 @@
 <template>
-<div class="container">
-  <div class="form-container">
-    <div class="form-card">
+  <div class="container">
+    <div class="form-container">
+      <div class="form-card">
         <form @submit.prevent="onSubmit">
           <div class="form-group">
             <Strong>User Name:</Strong>
@@ -35,16 +35,14 @@
           </div>
           <button type="submit" class="btn btn-primary">Register</button>
         </form>
-      <router-link class="registerLink" to="/register">Register</router-link>
+        <router-link class="registerLink" to="/login">Login</router-link>
+      </div>
     </div>
   </div>
-</div>  
 </template>
 
 <script>
-export default {
-  
-}
+export default {};
 </script>
 
 <style>
@@ -54,7 +52,7 @@ export default {
 }
 .form-container {
   /*background-size: cover;*/
-  width: 25%;
+  width: 28%;
   min-height: 100vh;
   background: white;
   font-family: "Oswald", sans-serif;
@@ -72,5 +70,20 @@ export default {
 .form-control {
   width: 38%;
 }
+
+.btn-primary {
+  background-color: rgb(29, 196, 86);
+  border-color: rgb(29, 196, 86);
+}
+.btn-primary:hover {
+  border-color: rgb(15, 175, 68);
+  background-color:rgb(15, 175, 68);
+}
+
+.registerLink {
+  color: rgb(33, 49, 58);;
+  border-color: rgb(29, 196, 86);
+}
+
 
 </style>
