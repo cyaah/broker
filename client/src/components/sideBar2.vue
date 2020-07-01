@@ -40,7 +40,7 @@ $text-sidebar-hover: #6b6b6b /*#fff*/;
 }
 
 #sidebar {
-  min-width: 142px;
+  min-width: 165px;
   /* max-width: 112px; */
   /*background: #5A5A5C;*/
   color: white;
@@ -72,7 +72,7 @@ $text-sidebar-hover: #6b6b6b /*#fff*/;
 #sidebar ul li a {
   padding: 10px;
   padding-top: 40px;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 800;
   color: #fcfffc;
   display: inline-block;

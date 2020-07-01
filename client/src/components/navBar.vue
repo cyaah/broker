@@ -3,20 +3,12 @@
     <div class="container-fluid">
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <div class="search-container" v-if="this.$route.path === '/'">
-          <!--          <div v-if="this.error === true " class="alert alert-dark" role="alert">-->
-          <!--            Error stock ticker "{{searchTerm}}" cannot be found. Try another ticker-->
-          <!--            <button type="button" class="close" data-dismiss="alert" aria-label="Close">-->
-          <!--              <span aria-hidden="true">&times;</span>-->
-          <!--            </button>-->
-          <!--          </div>-->
           <input
             v-on:keyup.enter="search"
-            v-on:keyyp.enter="canvas"
             v-on:click="errorChange"
             type="search"
             class="form-control"
             placeholder="Enter Stock Ticker"
-            aria-label="Recipient's username"
             v-model="searchTerm"
             id="main-search"
           />
@@ -97,7 +89,11 @@ export default {
           responsive: true,
           lineTension: 1,
           maintainAspectRatio: false,
-
+          elements: {
+            point: {
+              radius: 0.2
+            }
+          },
           scales: {
             xAxes: [
               {
@@ -166,6 +162,7 @@ export default {
       this.canvasData.data.labels = [];
       this.results = [];
       this.$store.dispatch("changeLoading", true); //Getting stock price info
+      this.$store.commit("stockPicked", this.searchTerm);
 
       axios
         .get(
@@ -203,7 +200,7 @@ export default {
       //Getting time series data
       axios
         .get(
-          `http://localhost:5000/search/timeseries?ticker=${encodeURIComponent(
+          `http://localhost:5000/search/timeseries/day?ticker=${encodeURIComponent(
             term
           )}`,
           { headers: { Authorization: `Bearer ${token}` } }
@@ -242,9 +239,6 @@ export default {
       };
       this.term = "";
       this.noResults = false;
-    },
-    canvas: function() {
-      this.createChart("Intra Day Chart", this.canvasData);
     },
     errorChange: function() {
       this.error = false;

@@ -167,7 +167,6 @@ export default {
   methods: {
     createChart(chartId, chartData) {
       if (myChart) {
-        console.log("inside");
         document.getElementById("myChart").remove();
         let canvas = document.createElement("canvas");
         canvas.setAttribute("id", "myChart");

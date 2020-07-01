@@ -231,7 +231,6 @@ exports.buyStock = function (req, res, next) {
 
 
 exports.sellStock = function (req, res, next) {
-  console.log('selling')
   let Header = req.headers['authorization'].split(' ');;
   let token = Header[1];
   let decoded = verify(token);
