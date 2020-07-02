@@ -26,7 +26,8 @@ export const store = new Vuex.Store({
         stockInfo: {},
         timeSeries: {},
         loading: false,
-        token: ''
+        token: '',
+        stockPicked:''
     },
     mutations: {
         BUY_STOCK(state, {
@@ -102,11 +103,13 @@ export const store = new Vuex.Store({
         },
         TIMESERIES(state, timeSeries) {
             state.timeSeries = {};
-            //console.log(state.timeSeries.data.labels)
             state.timeSeries = timeSeries;
         },
         loadingStatus(state, loadingStatus) {
             state.loading = loadingStatus;
+        },
+        stockPicked(state,stock){
+            state.stockPicked = stock;
         }
     },
     actions: {
@@ -160,6 +163,9 @@ export const store = new Vuex.Store({
         },
         getCredentials: state => {
             return state.credentials
+        },
+        getStockPicked: state =>{
+            return state.stockPicked
         }
 
     }

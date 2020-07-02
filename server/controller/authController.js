@@ -94,10 +94,7 @@ exports.register = function (req, res, next) {
               };
               console.log(err);
               res.status(500).json(error)
-            } else {
-              console.log(resp)
-              console.log('resp')
-            
+            } else {            
               credentials.id = resp._id;
               jwt.sign({
                 credentials

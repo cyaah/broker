@@ -28,7 +28,6 @@ export default {
   },
   mounted() {
     var abc = this.$store.getters.getLoadingStatus;
-    console.log(abc + " dfdfdffdfdfdfddf");
   }
 };
 </script>

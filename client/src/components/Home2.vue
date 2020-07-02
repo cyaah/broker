@@ -4,7 +4,11 @@
     <div id="content">
       <navBar v-on:chartData="canvas" v-on:stockInfo="stockCard"></navBar>
       <div id="dashboard-container" class="dashboard-container">
-        <div id="chart-body-container" class="chart-card-body">
+        <div class="chart-card-body">
+          <div v-if="this.stockPicked === true" class="chart-type-button-container">
+            <button type="button" class="btn btn-light" v-on:click="getDaily">Day</button>
+            <button type="button" class="btn btn-light" v-on:click="getMonthly">Month</button>
+          </div>
           <div id="chart-container" class="chart-container">
             <loader></loader>
             <canvas id="myChart" class="canvasChart" height="320px"></canvas>
@@ -40,7 +44,7 @@ export default {
   components: {
     sideBar2: sideBar2,
     navBar: navBar,
-    dashboard: dashboard,
+    // dashboard: dashboard,
     stockCard,
     loader
   },
@@ -71,6 +75,11 @@ export default {
           responsive: true,
           lineTension: 1,
           maintainAspectRatio: false,
+          elements: {
+            point: {
+              radius: 0
+            }
+          },
           scales: {
             xAxes: [
               {
@@ -130,6 +139,111 @@ export default {
     },
     stockBought() {
       this.success = true;
+    },
+    getDaily() {
+      let token = localStorage.getItem("token");
+      var term =  this.$store.getters.getStockPicked;
+
+      this.canvasData.data.datasets[0].data = [];
+      this.canvasData.data.labels = [];
+      this.results = [];
+      this.$store.dispatch("changeLoading", true); //Getting stock price info
+
+      //Getting time series data
+      axios
+        .get(
+          `http://localhost:5000/search/timeseries/day?ticker=${encodeURIComponent(
+            term
+          )}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        .then(res => {
+          this.timeSeriesData = res.data;
+
+          this.canvasData.data.labels = this.timeSeriesData.labels;
+          this.canvasData.data.datasets[0].data = this.timeSeriesData.dataPoints;
+          //this.$emit("chartData", this.canvasData);
+        })
+        .then(res => {
+          this.canvas(this.canvasData);
+          this.$store.dispatch("getTimeSeries", this.canvasData);
+        })
+        .then(() => {
+          if (this.$router.currentRoute.fullPath !== "/") {
+            this.$router.push({ path: "/" }).catch(err => {
+              console.log(err);
+            });
+          }
+          this.$store.dispatch("changeLoading", false);
+        })
+        .catch(err => {
+          this.$store.dispatch("changeLoading", false);
+          this.error = true;
+          console.log(err);
+        });
+
+      var isEmpty = obj => {
+        for (var key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            return false;
+          }
+        }
+        return true;
+      };
+      this.term = "";
+      this.noResults = false;
+    },
+    getMonthly() {
+      let token = localStorage.getItem("token");
+      var term =  this.$store.getters.getStockPicked;
+      this.canvasData.data.datasets[0].data = [];
+      this.canvasData.data.labels = [];
+      this.results = [];
+      this.$store.dispatch("changeLoading", true); //Getting stock price info
+
+      //Getting time series data
+      axios
+        .get(
+          `http://localhost:5000/search/timeseries/month?ticker=${encodeURIComponent(
+            term
+          )}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        .then(res => {
+          this.timeSeriesData = res.data;
+
+          this.canvasData.data.labels = this.timeSeriesData.labels;
+          this.canvasData.data.datasets[0].data = this.timeSeriesData.dataPoints;
+          //this.$emit("chartData", this.canvasData);
+        })
+        .then(res => {
+          this.canvas(this.canvasData);
+          this.$store.dispatch("getTimeSeries", this.canvasData);
+        })
+        .then(() => {
+          if (this.$router.currentRoute.fullPath !== "/") {
+            this.$router.push({ path: "/" }).catch(err => {
+              console.log(err);
+            });
+          }
+          this.$store.dispatch("changeLoading", false);
+        })
+        .catch(err => {
+          this.$store.dispatch("changeLoading", false);
+          this.error = true;
+          console.log(err);
+        });
+
+      var isEmpty = obj => {
+        for (var key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            return false;
+          }
+        }
+        return true;
+      };
+      this.term = "";
+      this.noResults = false;
     }
   },
   mounted() {
@@ -137,7 +251,6 @@ export default {
       this.$store.getters.getUserFunds === null ||
       this.$store.getters.getUserFunds === undefined
     ) {
-
       let token = localStorage.getItem("token");
       axios
         .get("http://localhost:5000/portfolio/", {
@@ -236,20 +349,50 @@ export default {
   height: 100px;
   border: 2px solid red;
 }
+
 .chart-card-body {
   /* width: 60%; */
   width: 90%;
-  height: 25rem;
+  height: 30rem;
   /* box-shadow: 2px 2px 2px 0 hsla(0, 0%, 0%, 0.5); */
-  border-radius: 15px;
+  /* border-radius: 15px;
   border: black;
-  /*position: absolute;*/
-  /* top: 150px;
-  left: 120px; */
+  border-style: solid; */
+
+  left: 120px;
   /*background: blue;*/
   margin: 5px;
   /*flex: flex-grow;*/
   /* box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); */
+}
+
+.chart-type-button-container {
+  text-align: center;
+}
+
+.chart-type-button-container button {
+  margin-right: 16px;
+}
+
+.chart-type-button-container button:last-child {
+  margin-right: 0px;
+}
+
+.btn-light {
+  background-color: transparent;
+  border-color: transparent;
+  color: rgb(33, 49, 58);
+  font-weight: bold;
+}
+
+.btn-light:hover {
+  border-color: rgb(15, 175, 68);
+  background-color: rgb(15, 175, 68);
+}
+
+.canvasChart {
+  position: relative;
+  top: 40px;
 }
 
 .loader-container {

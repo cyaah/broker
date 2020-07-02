@@ -8,8 +8,6 @@ const jwt = require('jsonwebtoken')
 
 //Middleware
 const validate = (req, res, next) => {
-  console.log('token')
-
   let bearerHeader = req.headers['authorization'];
   let currentTime = Date.now().valueOf() / 1000;
 
@@ -41,10 +39,8 @@ const validate = (req, res, next) => {
   function verify(token) {
     var decoded = false;
     try {
-      console.log('try')
       decoded = jwt.verify(token, 'secret');
     } catch (e) {
-      console.log('e')
       console.log(e);
       decoded = false; // still false
     }
@@ -59,7 +55,8 @@ const validate = (req, res, next) => {
 //Routes
 router.get('/portfolio', validate, portfolioController.getPortfolio);
 router.get('/search/stock', validate, searchController.getStockInfo);
-router.get('/search/timeseries', searchController.getTimeSeries);
+router.get('/search/timeseries/month', searchController.getTimeSeriesMonth);
+router.get('/search/timeseries/day', searchController.getTimeSeriesDay);
 router.post('/login', authController.login);
 router.post('/register', authController.register);
 router.post('/buyStock', validate, portfolioController.buyStock);

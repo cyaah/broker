@@ -42,10 +42,6 @@ export default {
     return {
       stocks: this.portfolio
     };
-  },
-  mounted() {
-    console.log(this.portfolio);
-    console.log(this.stocks);
   }
 };
 </script>
