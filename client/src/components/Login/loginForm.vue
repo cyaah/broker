@@ -54,7 +54,7 @@ export default {
         password: this.password
       };
       axios
-        .post("http://localhost:5000/login/", body)
+        .post("api/login/", body)
         .then(res => {
           this.$store.commit("LOGIN", res.data);
         })
