@@ -112,23 +112,6 @@ export default {
       
       
       
-      // })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
       var stockRef = db.collection(this.userId).doc("Portfolio");
     

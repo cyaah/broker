@@ -45,7 +45,7 @@
 export default {};
 </script>
 
-<style>
+<style scoped>
 .logo {
   font-family: "Oswald", sans-serif;
   font-weight: bold;
