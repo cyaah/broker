@@ -109,7 +109,7 @@ export default {
     ) {
       let token = localStorage.getItem("token");
       axios
-        .get("http://localhost:5000/portfolio/", {
+        .get(`${process.env.VUE_APP_BASE_URI}portfolio/`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         .then(res => {
@@ -144,7 +144,7 @@ export default {
       var term = stock.symbol;
       axios
         .get(
-          `http://localhost:5000/search/timeseries?ticker=${encodeURIComponent(
+          `${process.env.VUE_APP_BASE_URI}search/timeseries?ticker=${encodeURIComponent(
             term
           )}`,
           { headers: { Authorization: `Bearer ${token}` } }

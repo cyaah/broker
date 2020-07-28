@@ -166,7 +166,7 @@ export default {
 
       axios
         .get(
-          `http://localhost:5000/search/stock?ticker=${encodeURIComponent(
+          `${process.env.VUE_APP_BASE_URI}search/stock?ticker=${encodeURIComponent(
             term
           )}`,
           { headers: { Authorization: `Bearer ${token}` } }
@@ -200,7 +200,7 @@ export default {
       //Getting time series data
       axios
         .get(
-          `http://localhost:5000/search/timeseries/day?ticker=${encodeURIComponent(
+          `${process.env.VUE_APP_BASE_URI}search/timeseries/day?ticker=${encodeURIComponent(
             term
           )}`,
           { headers: { Authorization: `Bearer ${token}` } }

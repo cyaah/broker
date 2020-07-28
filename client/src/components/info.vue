@@ -60,7 +60,7 @@ export default {
         quantity: parseInt(this.quantity)
       };
 
-       axios.post('http://localhost:5000/buyStock/',order, { headers: {"Authorization" : `Bearer ${token}`}} ).then(res=>{
+       axios.post(`${process.env.VUE_APP_BASE_URI}buyStock/`,order, { headers: {"Authorization" : `Bearer ${token}`}} ).then(res=>{
          if(res.status === 200){
         let funds = res.data.funds;
         this.funds = funds;
@@ -82,7 +82,7 @@ export default {
         price: parseFloat(this.results["latestPrice"]).toFixed(2),
         quantity: parseInt(this.quantity)
       };
-      axios.post('http://localhost:5000/sellStock/',order, { headers: {"Authorization" : `Bearer ${token}`}} ).then(res=>{
+      axios.post(`${process.env.VUE_APP_BASE_URI}sellStock/`,order, { headers: {"Authorization" : `Bearer ${token}`}} ).then(res=>{
         if(res.status === 200){
             this.$store.commit("SELL_STOCK", order);
             EventBus.$emit("soldNotification");

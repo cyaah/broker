@@ -70,7 +70,7 @@ export default {
         quantity: parseInt(this.quantity)
       };
 
-       axios.post('http://localhost:5000/buyStock/',order, { headers: {"Authorization" : `Bearer ${token}`}} ).then(res=>{
+       axios.post(`${process.env.VUE_APP_BASE_URI}buyStock/`,order, { headers: {"Authorization" : `Bearer ${token}`}} ).then(res=>{
          if(res.status === 200){
         let funds = res.data.funds;
       

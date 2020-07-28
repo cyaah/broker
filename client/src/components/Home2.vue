@@ -152,7 +152,7 @@ export default {
       //Getting time series data
       axios
         .get(
-          `http://localhost:5000/search/timeseries/day?ticker=${encodeURIComponent(
+          `${process.env.VUE_APP_BASE_URI}search/timeseries/day?ticker=${encodeURIComponent(
             term
           )}`,
           { headers: { Authorization: `Bearer ${token}` } }
@@ -204,7 +204,7 @@ export default {
       //Getting time series data
       axios
         .get(
-          `http://localhost:5000/search/timeseries/month?ticker=${encodeURIComponent(
+          `${process.env.VUE_APP_BASE_URI}search/timeseries/month?ticker=${encodeURIComponent(
             term
           )}`,
           { headers: { Authorization: `Bearer ${token}` } }
@@ -253,7 +253,7 @@ export default {
     ) {
       let token = localStorage.getItem("token");
       axios
-        .get("http://localhost:5000/portfolio/", {
+        .get(`${process.env.VUE_APP_BASE_URI}portfolio/`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         .then(res => {
