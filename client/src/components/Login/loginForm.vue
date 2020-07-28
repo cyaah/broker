@@ -47,6 +47,10 @@ export default {
       password: ""
     };
   },
+  created(){
+    console.log('created')
+    console.log(process.env.VUE_APP_BASE_URI);
+  },
   methods: {
     loginUser() {
       let body = {
@@ -54,7 +58,7 @@ export default {
         password: this.password
       };
       axios
-        .post("api/login/", body)
+        .post(`${process.env.VUE_APP_BASE_URI}login/`, body)
         .then(res => {
           this.$store.commit("LOGIN", res.data);
         })

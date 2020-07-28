@@ -40,7 +40,7 @@ export default {
       };
 
       axios
-        .post("http://localhost:5000/register", userData)
+        .post(`${process.env.ROOT}register`, userData)
         .then(res => {
           this.$store.commit("LOGIN", res.data);
         })
