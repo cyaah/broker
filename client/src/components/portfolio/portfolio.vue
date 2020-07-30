@@ -12,6 +12,10 @@
           :portfolio="portfolio"
         ></portfolioTable>
         <div class="chart-card-body" v-if="this.selected === true">
+          <div v-if="this.selected === true" class="chart-type-button-container">
+            <button type="button" class="btn btn-light" v-on:click="getDaily">Day</button>
+            <button type="button" class="btn btn-light" v-on:click="getMonthly">Month</button>
+          </div>
           <div id="chart-container">
             <canvas id="myChart" width="20px" height="320px"></canvas>
           </div>
@@ -39,52 +43,57 @@ export default {
       userId: "",
       stockSelected: {},
       timeSeries: [],
-      canvasData: {
-        type: "line",
-        data: {
-          labels: [],
-          datasets: [
+      canvasData:{
+      type: "line",
+              data: {
+        labels: [],
+                datasets: [
+          {
+            fill: false,
+            label: "Monthly",
+            data: [],
+            backgroundColor: " rgb(34, 51, 38);",
+            borderColor: " rgb(34, 51, 38);",
+            borderWidth: 3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+                lineTension: 1,
+                maintainAspectRatio: false,
+                elements: {
+          point: {
+            radius: 0
+          }
+        },
+        scales: {
+          xAxes: [
             {
-              fill: false,
-              label: "Monthly",
-              data: [],
-              backgroundColor: "rgb(45, 58, 58)",
-              borderColor: "rgb(43,168,74)",
-              borderWidth: 3
+              type: "time",
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: "Date"
+              }
+            }
+          ],
+                  yAxes: [
+            {
+              ticks: {
+                beginAtZero: false,
+                padding: 25
+              },
+              display: true,
+              scaleLabel: {
+                display: true,
+                labelString: "Price"
+              }
             }
           ]
-        },
-        options: {
-          responsive: true,
-          lineTension: 1,
-          maintainAspectRatio: false,
-          scales: {
-            xAxes: [
-              {
-                type: "time",
-                display: true,
-                scaleLabel: {
-                  display: true,
-                  labalString: "Date"
-                }
-              }
-            ],
-            yAxes: [
-              {
-                ticks: {
-                  beginAtZero: false,
-                  padding: 25
-                },
-                display: true,
-                scaleLabel: {
-                  display: true,
-                  labelString: "Price"
-                }
-              }
-            ]
-          }
         }
-      },
+      }
+    },
       selected: false,
       loaded: false
     };
@@ -144,7 +153,7 @@ export default {
       var term = stock.symbol;
       axios
         .get(
-          `${process.env.VUE_APP_BASE_URI}search/timeseries?ticker=${encodeURIComponent(
+          `${process.env.VUE_APP_BASE_URI}search/timeseries/month?ticker=${encodeURIComponent(
             term
           )}`,
           { headers: { Authorization: `Bearer ${token}` } }
@@ -196,6 +205,102 @@ export default {
       }
       let funds = this.funds;
       this.funds += order.sellingPrice;
+    },
+    getDaily() {
+      let token = localStorage.getItem("token");
+      var term =  this.$store.getters.getStockPicked;
+
+      this.canvasData.data.datasets[0].data = [];
+      this.canvasData.data.labels = [];
+      this.results = [];
+      this.$store.dispatch("changeLoading", true); //Getting stock price info
+
+      //Getting time series data
+      axios
+              .get(
+                      `${process.env.VUE_APP_BASE_URI}search/timeseries/day?ticker=${encodeURIComponent(
+                              this.stockSelected.symbol
+                      )}`,
+                      { headers: { Authorization: `Bearer ${token}` } }
+              )
+              .then(res => {
+                this.timeSeriesData = res.data;
+
+                this.canvasData.data.labels = this.timeSeriesData.labels;
+                this.canvasData.data.datasets[0].data = this.timeSeriesData.dataPoints;
+                //this.$emit("chartData", this.canvasData);
+              })
+              .then(res => {
+                this.createChart("Intra Day Chart",this.canvasData);
+                this.$store.dispatch("getTimeSeries", this.canvasData);
+              })
+              .then(() => {
+
+                this.$store.dispatch("changeLoading", false);
+              })
+              .catch(err => {
+                this.$store.dispatch("changeLoading", false);
+                this.error = true;
+                console.log(err);
+              });
+
+      var isEmpty = obj => {
+        for (var key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            return false;
+          }
+        }
+        return true;
+      };
+      this.term = "";
+      this.noResults = false;
+    },
+    getMonthly() {
+      let token = localStorage.getItem("token");
+      var term =  this.$store.getters.getStockPicked;
+      this.canvasData.data.datasets[0].data = [];
+      this.canvasData.data.labels = [];
+      this.results = [];
+      this.$store.dispatch("changeLoading", true); //Getting stock price info
+
+      //Getting time series data
+      axios
+              .get(
+                      `${process.env.VUE_APP_BASE_URI}search/timeseries/month?ticker=${encodeURIComponent(
+                              this.stockSelected.symbol
+                      )}`,
+                      { headers: { Authorization: `Bearer ${token}` } }
+              )
+              .then(res => {
+                this.timeSeriesData = res.data;
+
+                this.canvasData.data.labels = this.timeSeriesData.labels;
+                this.canvasData.data.datasets[0].data = this.timeSeriesData.dataPoints;
+                //this.$emit("chartData", this.canvasData);
+              })
+              .then(res => {
+                this.createChart("Intra Day Chart",this.canvasData);
+                this.$store.dispatch("getTimeSeries", this.canvasData);
+              })
+              .then(() => {
+                this.$store.dispatch("changeLoading", false);
+              })
+              .catch(err => {
+                this.$store.dispatch("changeLoading", false);
+                this.error = true;
+                console.log(err);
+              });
+
+      var isEmpty = obj => {
+        for (var key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            return false;
+          }
+        }
+        return true;
+      };
+      this.term = "";
+      this.noResults = false;
     }
   }
 };
@@ -279,6 +384,18 @@ a:focus {
   height: 1px;
   border-bottom: 1px dashed #ddd;
   margin: 40px 0;
+}
+
+.btn-light {
+  background-color: transparent;
+  border-color: transparent;
+  color: rgb(33, 49, 58);
+  font-weight: bold;
+}
+
+.btn-light:hover {
+  border-color: rgb(15, 175, 68);
+  background-color: rgb(15, 175, 68);
 }
 /* ---------------------------------------------------
         SIDEBAR STYLE

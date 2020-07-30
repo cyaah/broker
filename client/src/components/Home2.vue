@@ -284,10 +284,6 @@ export default {
         if (this.stockInfo.hasOwnProperty(key)) return true;
       }
       return false;
-    },
-    timeSeriesPicked: function() {
-      if (this.canvasData.data) {
-      }
     }
   }
 };

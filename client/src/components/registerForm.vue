@@ -2,7 +2,7 @@
   <div class="container">
     <div class="form-container">
       <div class="form-card">
-        <form @submit.prevent="onSubmit">
+        <form>
           <div class="form-group">
             <Strong>User Name:</Strong>
             <input
@@ -33,7 +33,7 @@
             <Strong>Password</Strong>
             <input type="password" class="form-control" placeholder="Password" v-model="password" />
           </div>
-          <button type="submit" class="btn btn-primary">Register</button>
+          <button type="submit" @click.prevent="onSubmit" class="btn btn-primary">Register</button>
         </form>
         <router-link class="registerLink" to="/login">Login</router-link>
       </div>
@@ -42,7 +42,33 @@
 </template>
 
 <script>
-export default {};
+  import axios from "axios";
+
+  export default {
+
+  methods:{
+    onSubmit() {
+      var userData = {
+        username: this.username,
+        email: this.email,
+        password: this.password,
+        funds: 10000,
+        portfolio: []
+      };
+
+      axios.post(`${process.env.VUE_APP_BASE_URI}register`, userData).then(res => {
+        this.$store.commit("LOGIN", res.data);
+      }).then(() => {
+        this.$router.push({ path: "/" });
+      }).catch(err => {
+        console.log(err);
+        alert("Email or password incorrect");
+
+      });
+    }
+  }
+
+};
 </script>
 
 <style>
