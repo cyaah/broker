@@ -17,6 +17,7 @@
             <button type="button" class="btn btn-light" v-on:click="getMonthly">Month</button>
           </div>
           <div id="chart-container">
+            <loader></loader>
             <canvas id="myChart" width="20px" height="320px"></canvas>
           </div>
           <info :results="stockSelected" v-if="this.selected === true"></info>
@@ -31,6 +32,7 @@ import { mapGetters } from "vuex";
 import sideBar2 from "../sideBar2";
 import navBar from "../navBar";
 import portfolioTable from "./portfolioTable";
+import loader from "../loader";
 import { EventBus } from "./../eventBus";
 import axios from "axios";
 import info from "../info.vue";
@@ -43,57 +45,57 @@ export default {
       userId: "",
       stockSelected: {},
       timeSeries: [],
-      canvasData:{
-      type: "line",
-              data: {
-        labels: [],
-                datasets: [
-          {
-            fill: false,
-            label: "Monthly",
-            data: [],
-            backgroundColor: " rgb(34, 51, 38);",
-            borderColor: " rgb(34, 51, 38);",
-            borderWidth: 3
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-                lineTension: 1,
-                maintainAspectRatio: false,
-                elements: {
-          point: {
-            radius: 0
-          }
-        },
-        scales: {
-          xAxes: [
+      canvasData: {
+        type: "line",
+        data: {
+          labels: [],
+          datasets: [
             {
-              type: "time",
-              display: true,
-              scaleLabel: {
-                display: true,
-                labelString: "Date"
-              }
-            }
-          ],
-                  yAxes: [
-            {
-              ticks: {
-                beginAtZero: false,
-                padding: 25
-              },
-              display: true,
-              scaleLabel: {
-                display: true,
-                labelString: "Price"
-              }
+              fill: false,
+              label: "Monthly",
+              data: [],
+              backgroundColor: "rgb(34,139,34)",
+              borderColor: "rgb(34,139,34)",
+              borderWidth: 3
             }
           ]
+        },
+        options: {
+          responsive: true,
+          lineTension: 1,
+          maintainAspectRatio: false,
+          elements: {
+            point: {
+              radius: 0
+            }
+          },
+          scales: {
+            xAxes: [
+              {
+                type: "time",
+                display: true,
+                scaleLabel: {
+                  display: true,
+                  labelString: "Date"
+                }
+              }
+            ],
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: false,
+                  padding: 25
+                },
+                display: true,
+                scaleLabel: {
+                  display: true,
+                  labelString: "Price"
+                }
+              }
+            ]
+          }
         }
-      }
-    },
+      },
       selected: false,
       loaded: false
     };
@@ -153,9 +155,9 @@ export default {
       var term = stock.symbol;
       axios
         .get(
-          `${process.env.VUE_APP_BASE_URI}search/timeseries/month?ticker=${encodeURIComponent(
-            term
-          )}`,
+          `${
+            process.env.VUE_APP_BASE_URI
+          }search/timeseries/month?ticker=${encodeURIComponent(term)}`,
           { headers: { Authorization: `Bearer ${token}` } }
         )
         .then(res => {
@@ -184,6 +186,8 @@ export default {
         document.getElementById("chart-container").appendChild(canvas);
         myChart.destroy();
       }
+      console.log(chartData.data);
+      console.log("------");
       const ctx = document.getElementById("myChart").getContext("2d");
       myChart = new Chart(ctx, {
         type: chartData.type,
@@ -208,7 +212,7 @@ export default {
     },
     getDaily() {
       let token = localStorage.getItem("token");
-      var term =  this.$store.getters.getStockPicked;
+      var term = this.$store.getters.getStockPicked;
 
       this.canvasData.data.datasets[0].data = [];
       this.canvasData.data.labels = [];
@@ -217,32 +221,33 @@ export default {
 
       //Getting time series data
       axios
-              .get(
-                      `${process.env.VUE_APP_BASE_URI}search/timeseries/day?ticker=${encodeURIComponent(
-                              this.stockSelected.symbol
-                      )}`,
-                      { headers: { Authorization: `Bearer ${token}` } }
-              )
-              .then(res => {
-                this.timeSeriesData = res.data;
+        .get(
+          `${
+            process.env.VUE_APP_BASE_URI
+          }search/timeseries/day?ticker=${encodeURIComponent(
+            this.stockSelected.symbol
+          )}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        .then(res => {
+          this.timeSeriesData = res.data;
 
-                this.canvasData.data.labels = this.timeSeriesData.labels;
-                this.canvasData.data.datasets[0].data = this.timeSeriesData.dataPoints;
-                //this.$emit("chartData", this.canvasData);
-              })
-              .then(res => {
-                this.createChart("Intra Day Chart",this.canvasData);
-                this.$store.dispatch("getTimeSeries", this.canvasData);
-              })
-              .then(() => {
-
-                this.$store.dispatch("changeLoading", false);
-              })
-              .catch(err => {
-                this.$store.dispatch("changeLoading", false);
-                this.error = true;
-                console.log(err);
-              });
+          this.canvasData.data.labels = this.timeSeriesData.labels;
+          this.canvasData.data.datasets[0].data = this.timeSeriesData.dataPoints;
+          //this.$emit("chartData", this.canvasData);
+        })
+        .then(res => {
+          this.createChart("Intra Day Chart", this.canvasData);
+          this.$store.dispatch("getTimeSeries", this.canvasData);
+        })
+        .then(() => {
+          this.$store.dispatch("changeLoading", false);
+        })
+        .catch(err => {
+          this.$store.dispatch("changeLoading", false);
+          this.error = true;
+          console.log(err);
+        });
 
       var isEmpty = obj => {
         for (var key in obj) {
@@ -257,7 +262,7 @@ export default {
     },
     getMonthly() {
       let token = localStorage.getItem("token");
-      var term =  this.$store.getters.getStockPicked;
+      var term = this.$store.getters.getStockPicked;
       this.canvasData.data.datasets[0].data = [];
       this.canvasData.data.labels = [];
       this.results = [];
@@ -265,31 +270,33 @@ export default {
 
       //Getting time series data
       axios
-              .get(
-                      `${process.env.VUE_APP_BASE_URI}search/timeseries/month?ticker=${encodeURIComponent(
-                              this.stockSelected.symbol
-                      )}`,
-                      { headers: { Authorization: `Bearer ${token}` } }
-              )
-              .then(res => {
-                this.timeSeriesData = res.data;
+        .get(
+          `${
+            process.env.VUE_APP_BASE_URI
+          }search/timeseries/month?ticker=${encodeURIComponent(
+            this.stockSelected.symbol
+          )}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        )
+        .then(res => {
+          this.timeSeriesData = res.data;
 
-                this.canvasData.data.labels = this.timeSeriesData.labels;
-                this.canvasData.data.datasets[0].data = this.timeSeriesData.dataPoints;
-                //this.$emit("chartData", this.canvasData);
-              })
-              .then(res => {
-                this.createChart("Intra Day Chart",this.canvasData);
-                this.$store.dispatch("getTimeSeries", this.canvasData);
-              })
-              .then(() => {
-                this.$store.dispatch("changeLoading", false);
-              })
-              .catch(err => {
-                this.$store.dispatch("changeLoading", false);
-                this.error = true;
-                console.log(err);
-              });
+          this.canvasData.data.labels = this.timeSeriesData.labels;
+          this.canvasData.data.datasets[0].data = this.timeSeriesData.dataPoints;
+          //this.$emit("chartData", this.canvasData);
+        })
+        .then(res => {
+          this.createChart("Intra Day Chart", this.canvasData);
+          this.$store.dispatch("getTimeSeries", this.canvasData);
+        })
+        .then(() => {
+          this.$store.dispatch("changeLoading", false);
+        })
+        .catch(err => {
+          this.$store.dispatch("changeLoading", false);
+          this.error = true;
+          console.log(err);
+        });
 
       var isEmpty = obj => {
         for (var key in obj) {

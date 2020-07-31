@@ -160,7 +160,7 @@ export default {
 }
 
 #sellButton {
-  left: 25px;
+  left: 15px;
   border-radius: 5px;
 }
 

@@ -55,59 +55,7 @@ export default {
       stockInfo: {},
       timeSeries: [],
       myChart: null,
-      stockData: false,
-      canvasData: {
-        type: "line",
-        data: {
-          labels: [],
-          datasets: [
-            {
-              fill: false,
-              label: "Monthly",
-              data: [],
-              backgroundColor: " rgb(34, 51, 38);",
-              borderColor: " rgb(34, 51, 38);",
-              borderWidth: 3
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          lineTension: 1,
-          maintainAspectRatio: false,
-          elements: {
-            point: {
-              radius: 0
-            }
-          },
-          scales: {
-            xAxes: [
-              {
-                type: "time",
-                display: true,
-                scaleLabel: {
-                  display: true,
-                  labelString: "Date"
-                }
-              }
-            ],
-            yAxes: [
-              {
-                ticks: {
-                  beginAtZero: false,
-                  padding: 25
-                },
-                display: true,
-                scaleLabel: {
-                  display: true,
-                  labelString: "Price"
-                }
-              }
-            ]
-          }
-        }
-      }
-      // stockPicked: false
+      stockData: false
     };
   },
   methods: {
@@ -142,7 +90,7 @@ export default {
     },
     getDaily() {
       let token = localStorage.getItem("token");
-      var term =  this.$store.getters.getStockPicked;
+      var term = this.$store.getters.getStockPicked;
 
       this.canvasData.data.datasets[0].data = [];
       this.canvasData.data.labels = [];
@@ -152,9 +100,9 @@ export default {
       //Getting time series data
       axios
         .get(
-          `${process.env.VUE_APP_BASE_URI}search/timeseries/day?ticker=${encodeURIComponent(
-            term
-          )}`,
+          `${
+            process.env.VUE_APP_BASE_URI
+          }search/timeseries/day?ticker=${encodeURIComponent(term)}`,
           { headers: { Authorization: `Bearer ${token}` } }
         )
         .then(res => {
@@ -195,7 +143,7 @@ export default {
     },
     getMonthly() {
       let token = localStorage.getItem("token");
-      var term =  this.$store.getters.getStockPicked;
+      var term = this.$store.getters.getStockPicked;
       this.canvasData.data.datasets[0].data = [];
       this.canvasData.data.labels = [];
       this.results = [];
@@ -204,9 +152,9 @@ export default {
       //Getting time series data
       axios
         .get(
-          `${process.env.VUE_APP_BASE_URI}search/timeseries/month?ticker=${encodeURIComponent(
-            term
-          )}`,
+          `${
+            process.env.VUE_APP_BASE_URI
+          }search/timeseries/month?ticker=${encodeURIComponent(term)}`,
           { headers: { Authorization: `Bearer ${token}` } }
         )
         .then(res => {

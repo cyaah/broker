@@ -78,9 +78,7 @@ export default {
               label: "Monthly",
               data: [],
               backgroundColor: "rgb(34,139,34)",
-
               borderColor: "rgb(34,139,34)",
-
               borderWidth: 3
             }
           ]
